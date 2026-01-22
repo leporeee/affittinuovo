@@ -342,6 +342,7 @@ function App() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const scrolledRef = useRef(false);
   const [formData, setFormData] = useState({
     checkin: '',
     checkout: '',
@@ -360,7 +361,14 @@ function App() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      const y = window.scrollY || 0;
+      if (!scrolledRef.current && y > 80) {
+        scrolledRef.current = true;
+        setScrolled(true);
+      } else if (scrolledRef.current && y < 40) {
+        scrolledRef.current = false;
+        setScrolled(false);
+      }
       
       const sections = ['top', 'opzioni', 'case', 'faq', 'form'];
       for (const section of sections) {
@@ -492,7 +500,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white">
+    <div className="min-h-screen overflow-x-hidden bg-gradient-to-b from-sky-50 to-white">
       {/* Header */}
       <motion.header 
         initial={{ y: -100 }}
@@ -570,9 +578,9 @@ function App() {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                className="md:hidden overflow-hidden"
+                className="md:hidden overflow-hidden px-4 pb-4"
               >
-                <nav className="flex flex-col gap-2 py-4 border-t border-gray-100">
+                <nav className="flex flex-col gap-1 p-2 mt-3 rounded-2xl bg-white/95 backdrop-blur-md shadow-lg ring-1 ring-black/5">
                   {[
                     { label: 'Posti', id: 'opzioni' },
                     { label: 'Case', id: 'case' },
@@ -595,7 +603,7 @@ function App() {
       </motion.header>
 
       {/* Hero Section */}
-      <section id="top" className="relative min-h-screen flex items-center overflow-hidden pt-20">
+      <section id="top" className="relative min-h-[100svh] md:min-h-screen flex items-center overflow-hidden pt-20">
         {/* Background Images */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-r from-teal-600/90 via-teal-500/80 to-teal-400/70 z-10" />
@@ -691,23 +699,23 @@ function App() {
       </section>
 
       {/* How it works */}
-      <section className="py-20 md:py-28 bg-white">
+      <section className="py-12 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
-            className="text-center max-w-2xl mx-auto mb-16"
+            className="text-center max-w-2xl mx-auto mb-10 md:mb-16"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
               Come funziona
             </h2>
-            <p className="text-gray-500">
+            <p className="text-gray-500 text-sm md:text-base">
               Tre semplici passi per la tua vacanza perfetta
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-8">
+          <div className="grid gap-6 md:grid-cols-2 md:gap-8">
             {[
               { 
                 icon: Calendar, 
@@ -730,23 +738,25 @@ function App() {
             ].map((step, index) => (
               <motion.div 
                 key={index}
-                className="text-center group"
+                className="flex items-start gap-4 md:block md:text-center group"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 <motion.div 
-                  className={`w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg shadow-teal-500/30`}
+                  className={`w-12 h-12 md:w-20 md:h-20 shrink-0 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg shadow-teal-500/30 md:mx-auto md:mb-6`}
                   whileHover={{ scale: 1.1, rotate: 5 }}
                   transition={{ type: 'spring', stiffness: 300 }}
                 >
-                  <step.icon className="w-10 h-10 text-white" />
+                  <step.icon className="w-6 h-6 md:w-10 md:h-10 text-white" />
                 </motion.div>
-                <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
-                <p className="text-gray-500">
-                  {step.desc}
-                </p>
+                <div className="min-w-0">
+                  <h3 className="text-base md:text-xl font-semibold mb-1 md:mb-3">{step.title}</h3>
+                  <p className="text-gray-500 text-sm md:text-base">
+                    {step.desc}
+                  </p>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -754,18 +764,18 @@ function App() {
       </section>
 
       {/* Guest Options */}
-      <section id="opzioni" className="py-20 md:py-28 bg-white">
+      <section id="opzioni" className="py-12 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
-            className="text-center max-w-2xl mx-auto mb-12"
+            className="text-center max-w-2xl mx-auto mb-8 md:mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
               Quanti siete?
             </h2>
-            <p className="text-gray-500">
+            <p className="text-gray-500 text-sm md:text-base">
               Scegli la fascia di posti letto, ti mostriamo le case più adatte
             </p>
           </motion.div>
@@ -818,15 +828,15 @@ function App() {
       <section id="case" className="py-20 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
-            className="text-center max-w-2xl mx-auto mb-12"
+            className="text-center max-w-2xl mx-auto mb-8 md:mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
               Le nostre case
             </h2>
-            <p className="text-gray-500">
+            <p className="text-gray-500 text-sm md:text-base">
               Selezione di alloggi ideali per la tua vacanza estiva
             </p>
           </motion.div>
@@ -987,15 +997,15 @@ function App() {
       <section className="py-20 md:py-28 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
-            className="text-center max-w-2xl mx-auto mb-12"
+            className="text-center max-w-2xl mx-auto mb-8 md:mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
               Servizi inclusi
             </h2>
-            <p className="text-gray-500">
+            <p className="text-gray-500 text-sm md:text-base">
               Tutto quello che ti serve per una vacanza perfetta
             </p>
           </motion.div>
@@ -1063,15 +1073,15 @@ function App() {
       <section className="py-20 md:py-28 bg-gradient-to-b from-white to-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
-            className="text-center max-w-2xl mx-auto mb-16"
+            className="text-center max-w-2xl mx-auto mb-10 md:mb-16"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
               Cosa dicono di noi
             </h2>
-            <p className="text-gray-500">
+            <p className="text-gray-500 text-sm md:text-base">
               Le esperienze dei nostri ospiti
             </p>
           </motion.div>
@@ -1120,15 +1130,15 @@ function App() {
       <section id="faq" className="py-20 md:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
-            className="text-center max-w-2xl mx-auto mb-12"
+            className="text-center max-w-2xl mx-auto mb-8 md:mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
               Domande frequenti
             </h2>
-            <p className="text-gray-500">
+            <p className="text-gray-500 text-sm md:text-base">
               Tutto quello che vuoi sapere
             </p>
           </motion.div>
@@ -1291,15 +1301,15 @@ function App() {
       <section className="py-20 md:py-28 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
-            className="text-center max-w-2xl mx-auto mb-12"
+            className="text-center max-w-2xl mx-auto mb-8 md:mb-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
               Contattaci
             </h2>
-            <p className="text-gray-500">
+            <p className="text-gray-500 text-sm md:text-base">
               Siamo sempre a tua disposizione
             </p>
           </motion.div>
