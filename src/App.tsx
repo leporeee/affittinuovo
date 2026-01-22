@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   MapPin, Users, Bed, Bath, Car, Waves, Wind, Wifi, 
   Star, Heart, Calendar, MessageCircle, Shield, CheckCircle, ChevronDown,
-  Phone, Sparkles, Home, Search, Clock, Euro,
+  Phone, Sparkles, Home, Search, Clock,
   ArrowRight, X, ChevronLeft, ChevronRight, Maximize2,
   Sun, Coffee, Dumbbell, Camera, Navigation
 } from 'lucide-react';
@@ -336,7 +336,7 @@ const services = [
 function App() {
   const [selectedGuests, setSelectedGuests] = useState<string>('all');
   const [selectedZone, setSelectedZone] = useState<string>('all');
-  const [sortBy, setSortBy] = useState<string>('featured');
+  const [sortBy] = useState<string>('featured');
   const [filteredHouses, setFilteredHouses] = useState<House[]>(houses);
   const [selectedHouse, setSelectedHouse] = useState<House | null>(null);
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -490,21 +490,6 @@ function App() {
     }
     setShowMobileMenu(false);
   };
-
-  const guestOptions = [
-    { value: 'all', label: 'Tutti', icon: Users },
-    { value: '2-4', label: '2-4', icon: Users },
-    { value: '4-8', label: '4-8', icon: Users },
-    { value: '8-12', label: '8-12', icon: Home },
-    { value: '12+', label: '12+', icon: Sparkles }
-  ];
-
-  const zoneOptions = [
-    { value: 'all', label: 'Tutte le zone' },
-    { value: 'Baia Verde', label: 'Baia Verde' },
-    { value: 'Gallipoli Centro', label: 'Gallipoli Centro' },
-    { value: 'Gallipoli', label: 'Gallipoli' }
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white">
