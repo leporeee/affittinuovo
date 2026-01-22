@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   MapPin, Users, Bed, Bath, Car, Waves, Wind, Wifi, 
   Star, Heart, Calendar, MessageCircle, Shield, CheckCircle, ChevronDown,
-  Phone, Mail, Sparkles, Home, Search, Clock, Euro, 
+  Phone, Sparkles, Home, Search, Clock, Euro,
   ArrowRight, X, ChevronLeft, ChevronRight, Maximize2,
   Sun, Coffee, Dumbbell, Camera, Navigation
 } from 'lucide-react';
@@ -13,26 +13,22 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { toast } from 'sonner';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
 
-// Fix per le icone di Leaflet
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 
-const DefaultIcon = L.icon({
-  iconUrl: icon,
-  shadowUrl: iconShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41]
-});
 
-L.Marker.prototype.options.icon = DefaultIcon;
+const WhatsAppIcon = ({ className = '' }: { className?: string }) => (
+  <svg
+    viewBox="0 0 448 512"
+    className={className}
+    fill="currentColor"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 222-99.6 222-222 0-59.3-25.2-115-65.1-156.9zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-82.8 184.6-184.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
+  </svg>
+);
 
 interface House {
   id: string;
@@ -324,7 +320,7 @@ const reviews = [
 const stats = [
   { value: 20, suffix: '+', label: 'Case disponibili', icon: Home },
   { value: 500, suffix: '+', label: 'Ospiti soddisfatti', icon: Users },
-  { value: 4.9, suffix: '/5', label: 'Valutazione media', icon: Star },
+  { value: 4.8, suffix: '/5', label: 'Valutazione media', icon: Star },
   { value: 5, suffix: 'min', label: 'Tempo di risposta', icon: Clock }
 ];
 
@@ -360,6 +356,7 @@ function App() {
   const [animatedStats, setAnimatedStats] = useState<number[]>(stats.map(() => 0));
   const statsRef = useRef<HTMLDivElement>(null);
   const [statsInView, setStatsInView] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -540,8 +537,7 @@ function App() {
               {[
                 { label: 'Posti', id: 'opzioni' },
                 { label: 'Case', id: 'case' },
-                { label: 'Mappa', id: 'mappa' },
-                { label: 'FAQ', id: 'faq' },
+                                { label: 'FAQ', id: 'faq' },
                 { label: 'Contatti', id: 'form' }
               ].map(item => (
                 <button 
@@ -568,7 +564,7 @@ function App() {
                 target="_blank"
                 className="hidden sm:flex items-center gap-2 bg-[#25D366] text-white px-5 py-2.5 rounded-full font-medium shadow-lg shadow-green-500/30 hover:bg-[#1ebe57] hover:shadow-xl hover:shadow-green-500/40 transition-all hover:-translate-y-0.5 text-sm"
               >
-                <MessageCircle className="w-4 h-4" />
+                <WhatsAppIcon className="w-4 h-4 text-white" />
                 WhatsApp
               </a>
               
@@ -595,8 +591,7 @@ function App() {
                   {[
                     { label: 'Posti', id: 'opzioni' },
                     { label: 'Case', id: 'case' },
-                    { label: 'Mappa', id: 'mappa' },
-                    { label: 'FAQ', id: 'faq' },
+                                        { label: 'FAQ', id: 'faq' },
                     { label: 'Contatti', id: 'form' }
                   ].map(item => (
                     <button 
@@ -708,64 +703,6 @@ function App() {
           </div>
         </div>
 
-        {/* Floating elements */}
-        <motion.div 
-          initial={{ opacity: 0, x: 100 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="absolute bottom-10 right-10 hidden lg:block"
-        >
-          <motion.div 
-            className="bg-white/20 backdrop-blur-md rounded-2xl p-4 text-white border border-white/30"
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-[#25D366] flex items-center justify-center shadow-lg">
-                <MessageCircle className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <div className="font-semibold">Prenota su WhatsApp</div>
-                <div className="text-sm text-white/80">Rapido e facile</div>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-16 bg-white border-y border-gray-100">
-        <div 
-          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
-          ref={statsRef}
-        >
-          <div 
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
-            onMouseEnter={() => setStatsInView(true)}
-          >
-            {stats.map((stat, index) => (
-              <motion.div 
-                key={index}
-                className="text-center"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-teal-50 flex items-center justify-center">
-                  <stat.icon className="w-7 h-7 text-teal-500" />
-                </div>
-                <div className="text-3xl md:text-4xl font-bold text-gray-800 mb-1" style={{ fontFamily: 'Playfair Display, serif' }}>
-                  {stat.suffix === '/5' || stat.suffix === 'min' 
-                    ? `${animatedStats[index].toFixed(1)}${stat.suffix}`
-                    : `${Math.round(animatedStats[index])}${stat.suffix}`
-                  }
-                </div>
-                <div className="text-sm text-gray-500">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
       </section>
 
       {/* How it works */}
@@ -785,7 +722,7 @@ function App() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 gap-8">
             {[
               { 
                 icon: Calendar, 
@@ -825,44 +762,6 @@ function App() {
                 <p className="text-gray-500">
                   {step.desc}
                 </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Services */}
-      <section className="py-20 md:py-28 bg-gradient-to-b from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="text-center max-w-2xl mx-auto mb-12"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
-              Servizi inclusi
-            </h2>
-            <p className="text-gray-500">
-              Tutto quello che ti serve per una vacanza perfetta
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {services.map((service, index) => (
-              <motion.div 
-                key={index}
-                className="text-center p-6 rounded-2xl bg-white shadow-sm hover:shadow-lg transition-all hover:-translate-y-1"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: index * 0.05 }}
-              >
-                <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-teal-50 flex items-center justify-center">
-                  <service.icon className="w-6 h-6 text-teal-500" />
-                </div>
-                <h4 className="font-semibold text-sm mb-1">{service.title}</h4>
-                <p className="text-xs text-gray-500">{service.description}</p>
               </motion.div>
             ))}
           </div>
@@ -926,74 +825,6 @@ function App() {
                 <p className="text-sm text-gray-500">{option.desc}</p>
               </motion.button>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Filters */}
-      <section className="py-6 bg-gray-50 border-y border-gray-200 sticky top-16 md:top-20 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700">Ospiti:</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {guestOptions.map(option => (
-                <button
-                  key={option.value}
-                  onClick={() => setSelectedGuests(option.value)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer border ${
-                    selectedGuests === option.value 
-                      ? 'bg-teal-500 text-white border-teal-500' 
-                      : 'bg-white text-gray-600 border-gray-300 hover:border-teal-400 hover:text-teal-600'
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-2 ml-0 md:ml-8">
-              <MapPin className="w-4 h-4 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700">Zona:</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {zoneOptions.map(option => (
-                <button
-                  key={option.value}
-                  onClick={() => setSelectedZone(option.value)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all cursor-pointer border ${
-                    selectedZone === option.value 
-                      ? 'bg-teal-500 text-white border-teal-500' 
-                      : 'bg-white text-gray-600 border-gray-300 hover:border-teal-400 hover:text-teal-600'
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-2 ml-auto">
-              <select 
-                value={sortBy} 
-                onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-2 rounded-full border border-gray-300 bg-white text-sm text-gray-700 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
-              >
-                <option value="featured">Consigliate</option>
-                <option value="guests-asc">Ospiti ↑</option>
-                <option value="guests-desc">Ospiti ↓</option>
-                <option value="price-asc">Prezzo ↑</option>
-                <option value="price-desc">Prezzo ↓</option>
-                <option value="name-asc">Nome A-Z</option>
-              </select>
-            </div>
-          </div>
-          
-          <div className="mt-4 text-sm text-gray-500">
-            Mostrando {filteredHouses.length} di {houses.length} case
-            {selectedGuests !== 'all' && ` • ${selectedGuests} ospiti`}
-            {selectedZone !== 'all' && ` • ${selectedZone}`}
           </div>
         </div>
       </section>
@@ -1154,7 +985,7 @@ function App() {
                           onClick={() => handleWhatsApp(house)}
                           className="flex-1 px-4 py-2.5 rounded-full bg-teal-500 text-white font-medium hover:bg-teal-600 transition-all text-sm flex items-center justify-center gap-2"
                         >
-                          <MessageCircle className="w-4 h-4" />
+                          <WhatsAppIcon className="w-4 h-4 text-white" />
                           WhatsApp
                         </button>
                       </div>
@@ -1167,8 +998,8 @@ function App() {
         </div>
       </section>
 
-      {/* Map Section */}
-      <section id="mappa" className="py-20 md:py-28 bg-gray-50">
+      {/* Services */}
+      <section className="py-20 md:py-28 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
             className="text-center max-w-2xl mx-auto mb-12"
@@ -1177,61 +1008,71 @@ function App() {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
-              Dove siamo
+              Servizi inclusi
             </h2>
             <p className="text-gray-500">
-              Scopri la posizione delle nostre proprietà
+              Tutto quello che ti serve per una vacanza perfetta
             </p>
           </motion.div>
 
-          <motion.div 
-            className="rounded-2xl overflow-hidden shadow-2xl"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="h-[500px] md:h-[600px]">
-              <MapContainer 
-                center={[40.053, 17.967]} 
-                zoom={13} 
-                style={{ height: '100%', width: '100%' }}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            {services.map((service, index) => (
+              <motion.div
+                key={index}
+                className="text-center p-6 rounded-2xl bg-white shadow-sm hover:shadow-lg transition-all hover:-translate-y-1"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
               >
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                {houses.map(house => (
-                  <Marker key={house.id} position={house.position}>
-                    <Popup>
-                      <div className="p-2 min-w-[200px]">
-                        <h4 className="font-bold text-gray-800 mb-1">{house.name}</h4>
-                        <p className="text-sm text-gray-600 mb-2">{house.zone}</p>
-                        <div className="flex items-center gap-2 mb-2">
-                          <Users className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-600">{house.guests} ospiti</span>
-                        </div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <Euro className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm font-semibold text-teal-600">{house.priceFrom}/notte</span>
-                        </div>
-                        <button 
-                          onClick={() => {
-                            setSelectedHouse(house);
-                          }}
-                          className="w-full py-2 bg-teal-500 text-white rounded-lg text-sm font-medium hover:bg-teal-600 transition-colors"
-                        >
-                          Vedi dettagli
-                        </button>
-                      </div>
-                    </Popup>
-                  </Marker>
-                ))}
-              </MapContainer>
-            </div>
-          </motion.div>
+                <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-teal-50 flex items-center justify-center">
+                  <service.icon className="w-6 h-6 text-teal-500" />
+                </div>
+                <h4 className="font-semibold text-sm mb-1">{service.title}</h4>
+                <p className="text-xs text-gray-500">{service.description}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
+
+      {/* Stats Section */}
+      <section className="py-16 bg-white border-y border-gray-100">
+        <div
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          ref={statsRef}
+        >
+          <div
+            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            onMouseEnter={() => setStatsInView(true)}
+          >
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                className="text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-teal-50 flex items-center justify-center">
+                  <stat.icon className="w-7 h-7 text-teal-500" />
+                </div>
+                <div className="text-3xl md:text-4xl font-bold text-gray-800 mb-1" style={{ fontFamily: 'Playfair Display, serif' }}>
+                  {stat.suffix === '/5'
+                    ? `${animatedStats[index].toFixed(1)}${stat.suffix}`
+                    : stat.suffix === 'min'
+                      ? `${Math.round(animatedStats[index])} ${stat.suffix}`
+                      : `${Math.round(animatedStats[index])}${stat.suffix}`
+                  }
+                </div>
+                <div className="text-sm text-gray-500">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
 
       {/* Reviews Section */}
       <section className="py-20 md:py-28 bg-gradient-to-b from-white to-gray-50">
@@ -1368,7 +1209,7 @@ function App() {
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                    <MessageCircle className="w-5 h-5" />
+                    <WhatsAppIcon className="w-5 h-5 text-white" />
                   </div>
                   <span>Assistenza durante tutto il soggiorno</span>
                 </div>
@@ -1478,11 +1319,10 @@ function App() {
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {[
               { icon: Phone, title: 'Telefono', subtitle: 'Chiamaci per informazioni immediate', value: '+39 329 227 2939', href: 'tel:+393292272939', color: 'teal' },
-              { icon: MessageCircle, title: 'WhatsApp', subtitle: 'Risposta rapida garantita', value: 'Scrivici su WhatsApp', href: 'https://wa.me/393292272939', color: 'green' },
-              { icon: Mail, title: 'Email', subtitle: 'Per richieste dettagliate', value: 'info@salentostay.it', href: 'mailto:info@salentostay.it', color: 'teal' }
+              { icon: MessageCircle, title: 'WhatsApp', subtitle: 'Risposta rapida garantita', value: 'Scrivici su WhatsApp', href: 'https://wa.me/393292272939', color: 'green' }
             ].map((contact, index) => (
               <motion.div
                 key={index}
@@ -1527,7 +1367,7 @@ function App() {
       {/* Footer */}
       <footer className="bg-gray-800 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
@@ -1540,31 +1380,11 @@ function App() {
                 Prenota direttamente con noi, senza intermediari.
               </p>
             </div>
-
-            <div>
-              <h4 className="font-semibold mb-4 text-white">Esplora</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><button onClick={() => scrollToSection('case')} className="hover:text-white transition-colors">Tutte le case</button></li>
-                <li><button onClick={() => scrollToSection('opzioni')} className="hover:text-white transition-colors">Per numero ospiti</button></li>
-                <li><button onClick={() => scrollToSection('faq')} className="hover:text-white transition-colors">Domande frequenti</button></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold mb-4 text-white">Zone</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><button onClick={() => { setSelectedZone('Baia Verde'); scrollToSection('case'); }} className="hover:text-white transition-colors">Baia Verde</button></li>
-                <li><button onClick={() => { setSelectedZone('Gallipoli Centro'); scrollToSection('case'); }} className="hover:text-white transition-colors">Centro Storico</button></li>
-                <li><button onClick={() => { setSelectedZone('Gallipoli'); scrollToSection('case'); }} className="hover:text-white transition-colors">Gallipoli</button></li>
-              </ul>
-            </div>
-
             <div>
               <h4 className="font-semibold mb-4 text-white">Contatti</h4>
               <ul className="space-y-2 text-sm text-gray-400">
                 <li><a href="tel:+393292272939" className="hover:text-white transition-colors">+39 329 227 2939</a></li>
                 <li><a href="https://wa.me/393292272939" className="hover:text-white transition-colors">WhatsApp</a></li>
-                <li><a href="mailto:info@salentostay.it" className="hover:text-white transition-colors">info@salentostay.it</a></li>
               </ul>
             </div>
           </div>
@@ -1574,7 +1394,7 @@ function App() {
               © {new Date().getFullYear()} Salento Stay. Tutti i diritti riservati.
             </p>
             <div className="flex gap-6 text-sm text-gray-400">
-              <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+              <button onClick={() => setPrivacyOpen(true)} className="hover:text-white transition-colors">Privacy Policy</button>
               <a href="#" className="hover:text-white transition-colors">Termini e Condizioni</a>
             </div>
           </div>
@@ -1590,9 +1410,47 @@ function App() {
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 1 }}
       >
-        <MessageCircle className="w-5 h-5" />
+        <WhatsAppIcon className="w-5 h-5 text-white" />
         <span className="hidden sm:inline">Chiedi su WhatsApp</span>
       </motion.a>
+
+
+      {/* Privacy Policy Dialog */}
+      <Dialog open={privacyOpen} onOpenChange={setPrivacyOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Informativa Privacy</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 text-sm text-gray-600">
+            <p>Questa pagina è una informativa semplice per un sito vetrina che rimanda a WhatsApp.</p>
+
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-1">Che cos’è questo sito?</h3>
+              <p>Salento Stay è un sito vetrina di alloggi. Non consente pagamenti o prenotazioni online: la richiesta avviene tramite WhatsApp.</p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-1">Dati che inserisci nel form</h3>
+              <p>Se compili il modulo (date, numero ospiti, budget, note), il sito prepara un messaggio e apre WhatsApp sul tuo dispositivo. I dati non vengono salvati su questo sito: restano nel messaggio che scegli tu se inviare.</p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-1">WhatsApp</h3>
+              <p>Quando clicchi un pulsante WhatsApp, vieni reindirizzato a WhatsApp/Meta. L’eventuale trattamento dei dati su WhatsApp segue l’informativa di WhatsApp.</p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-1">Cookie e tracciamenti</h3>
+              <p>Questo sito non usa cookie di profilazione né strumenti di analytics di terze parti.</p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-1">Titolare del trattamento</h3>
+              <p>Per contatti e richieste relative alla privacy, scrivici su WhatsApp.</p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Lightbox */}
       <Lightbox
@@ -1731,7 +1589,7 @@ function App() {
                       }}
                       className="flex-1 px-4 py-3 rounded-full bg-teal-500 text-white font-medium hover:bg-teal-600 transition-all text-sm flex items-center justify-center gap-2"
                     >
-                      <MessageCircle className="w-4 h-4" />
+                      <WhatsAppIcon className="w-4 h-4 text-white" />
                       Richiedi su WhatsApp
                     </button>
                   </div>
