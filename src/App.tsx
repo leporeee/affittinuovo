@@ -463,17 +463,23 @@ const services = [
 ];
 
 function App() {
-  
-  // Lightbox: mostra SOLO immagini reali in /case/ (no demo)
-  const safeSlidesForLightbox = (arr: any[]) => {
-    const a = Array.isArray(arr) ? arr : [];
-    const norm = a.map((x: any) => (typeof x === "string" ? x : (x?.src || x?.url || ""))).filter(Boolean);
+
+  // Lightbox: SOLO immagini reali /case/... nel formato {src}
+  const getHouseSlides = (house: any) => {
+    const raw: any[] = [];
+    if (house?.image) raw.push(house.image);
+    const arr = house?.images || house?.photos || house?.gallery || [];
+    if (Array.isArray(arr)) raw.push(...arr);
+
+    const norm = raw
+      .map((x: any) => (typeof x === "string" ? x : (x?.src || x?.url || "")))
+      .filter(Boolean)
+      .map((u: string) => (u.startsWith("case/") ? "/" + u : u));
+
     const onlyCase = norm.filter((u: string) => u.startsWith("/case/"));
     const uniq = Array.from(new Set(onlyCase));
     return uniq.map((src: string) => ({ src }));
   };
-
-
   const [selectedGuests, setSelectedGuests] = useState<string>('all');
   const [selectedZone, setSelectedZone] = useState<string>('all');
   const [sortBy] = useState<string>('featured');
@@ -626,7 +632,7 @@ return () => window.removeEventListener('scroll', handleScroll);
   };
 
   const openLightbox = (house: House, index: number) => {
-    setLightboxImages(house.gallery.map(img => ({ src: img })));
+    setLightboxImages(getHouseSlides(house));
     setLightboxIndex(index);
     setLightboxOpen(true);
   };
@@ -1591,7 +1597,7 @@ return () => window.removeEventListener('scroll', handleScroll);
       <Lightbox
         open={lightboxOpen}
         close={() => setLightboxOpen(false)}
-        slides={safeSlidesForLightbox(lightboxImages)}
+        slides={lightboxImages}
         index={lightboxIndex}
         on={{ view: ({ index }) => setLightboxIndex(index) }}
 styles={{
