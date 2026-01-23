@@ -1,11 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import {
+  useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  MapPin, Users, Bed, Bath, Car, Waves, Wind, Wifi, 
-  Star, Heart, Calendar, MessageCircle, Shield, CheckCircle, ChevronDown,
-  Phone, Sparkles, Home, Search, Clock,
-  ArrowRight, X, ChevronLeft, ChevronRight, Maximize2,
-  Sun, Coffee, Dumbbell, Camera, Navigation
+  MapPin, Users, Bed, Bath, Car, Waves, Wind, Wifi, Star, Heart, Calendar, MessageCircle, Shield, CheckCircle, ChevronDown, Phone, Sparkles, Home, Search, Clock, ArrowRight, Maximize2, Sun, Coffee, Dumbbell, Camera, Navigation,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -466,6 +463,17 @@ const services = [
 ];
 
 function App() {
+  
+  // Lightbox: mostra SOLO immagini reali in /case/ (no demo)
+  const safeSlidesForLightbox = (arr: any[]) => {
+    const a = Array.isArray(arr) ? arr : [];
+    const norm = a.map((x: any) => (typeof x === "string" ? x : (x?.src || x?.url || ""))).filter(Boolean);
+    const onlyCase = norm.filter((u: string) => u.startsWith("/case/"));
+    const uniq = Array.from(new Set(onlyCase));
+    return uniq.map((src: string) => ({ src }));
+  };
+
+
   const [selectedGuests, setSelectedGuests] = useState<string>('all');
   const [selectedZone, setSelectedZone] = useState<string>('all');
   const [sortBy] = useState<string>('featured');
@@ -515,7 +523,7 @@ function App() {
       }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   useEffect(() => {
@@ -1583,15 +1591,10 @@ function App() {
       <Lightbox
         open={lightboxOpen}
         close={() => setLightboxOpen(false)}
-        slides={lightboxImages}
+        slides={safeSlidesForLightbox(lightboxImages)}
         index={lightboxIndex}
         on={{ view: ({ index }) => setLightboxIndex(index) }}
-        render={{ 
-          buttonPrev: () => <ChevronLeft className="w-8 h-8 text-white" />,
-          buttonNext: () => <ChevronRight className="w-8 h-8 text-white" />,
-          buttonClose: () => <X className="w-8 h-8 text-white" />
-        }}
-        styles={{
+styles={{
           container: { backgroundColor: 'rgba(0, 0, 0, 0.9)' },
         }}
       />
