@@ -50,7 +50,8 @@ interface House {
   reviews?: number;
   position: [number, number];
   distanceToSea?: number;
-}
+
+  category?: string;}
 
 const houses: House[] = [
   {
@@ -60,70 +61,119 @@ const houses: House[] = [
     guests: 9,
     bedrooms: 3,
     bathrooms: 2,
-    image: '/images/houses/atena.jpg',
-    gallery: ['/images/houses/atena.jpg', '/images/hero-interior.jpg', '/images/hero-sunset.jpg'],
-    features: ['3 camere', '2 bagni', 'Cucina completa', 'Terrazza', 'Vicino al mare'],
-    description: 'Spaziosa villa a Baia Verde, ideale per famiglie numerose. A pochi passi dalla splendida spiaggia di sabbia fine. La casa offre spazi generosi e una terrazza perfetta per cene all\'aperto.',
-    priceFrom: '€120',
-    rating: 4.9,
-    reviews: 24,
-    position: [40.003, 17.933],
-    distanceToSea: 200
+    distanceToSea: 200,
+    hasPool: false,
+    hasParking: false,
+    hasAC: true,
+    isNew: false,
+    category: 'families',
+    image: '/case/atena.jpg',
+    gallery: [
+      '/images/houses/atena.jpg',
+      '/images/houses/atena-2.jpg',
+      '/images/houses/atena-3.jpg'
+    ],
+    features: [
+      'Cucina attrezzata',
+      'Balcone arredato',
+      'Climatizzatori',
+      'Lavatrice',
+      'TV'
+    ],
+    description: 'A Baia Verde, a pochi minuti a piedi dal mare e dai principali stabilimenti, Residenza Atena è un ampio quadrilocale ideale per famiglie e gruppi fino a 9 ospiti. Dispone di zona giorno con angolo cottura attrezzato e balcone arredato, 3 camere (una quadrupla e due doppie) e 2 bagni con box doccia. Dotazioni: climatizzatori, lavatrice e TV.',
+    position: [40.003, 17.933]
   },
   {
     id: 'baia-verde',
-    name: 'BAIA VERDE',
+    name: 'BAIA VERDE APARTMENT',
     zone: 'Baia Verde',
     guests: 6,
     bedrooms: 2,
     bathrooms: 1,
-    image: '/images/houses/baia-verde.jpg',
-    gallery: ['/images/houses/baia-verde.jpg', '/images/gallipoli-beach.jpg', '/images/hero-beach.jpg'],
-    features: ['Parcheggio privato', 'Giardino', 'BBQ', 'Vicino alla spiaggia'],
-    description: 'Accogliente villetta con parcheggio privato custodito. Perfetta per famiglie che cercano relax e comfort. Il giardino attrezzato con barbecue è ideale per pranzi all\'aperto.',
+    distanceToSea: 250,
+    hasPool: false,
     hasParking: true,
-    priceFrom: '€90',
-    rating: 4.8,
-    reviews: 18,
-    position: [40.002, 17.934],
-    distanceToSea: 150
+    hasAC: false,
+    isNew: true,
+    category: 'couples',
+    image: '/case/baia-verde.jpg',
+    gallery: [
+      '/images/houses/baia-verde.jpg',
+      '/images/houses/baia-verde-2.jpg',
+      '/images/houses/baia-verde-3.jpg'
+    ],
+    features: [
+      'Nuova costruzione',
+      'Cucina attrezzata',
+      'Terrazza per mangiare fuori',
+      'Doccia esterna + lavapiedi',
+      'Parcheggio privato custodito'
+    ],
+    description: 'Nel cuore di Baia Verde, a pochi minuti a piedi da spiagge e locali, Baia Verde Apartment è un appartamento di nuova costruzione che ospita comodamente fino a 6 persone. Composto da 2 camere da letto, 1 bagno interno, cucina attrezzata e terrazza per pranzare e cenare all’aperto. A disposizione anche doccia esterna con lavapiedi e parcheggio privato custodito.',
+    position: [40.001, 17.932]
   },
   {
     id: 'villa-azzurra',
     name: 'VILLA AZZURRA',
     zone: 'Baia Verde',
     guests: 10,
-    bedrooms: 4,
-    bathrooms: 3,
-    image: '/images/houses/villa-azzurra.jpg',
-    gallery: ['/images/houses/villa-azzurra.jpg', '/images/hero-sunset.jpg', '/images/hero-interior.jpg'],
-    features: ['Giardino attrezzato', 'Terrazzo panoramico', 'Piscina', '4 camere', 'Luxury'],
-    description: 'Elegante villa con piscina privata e terrazzo panoramico. Il massimo del comfort e del lusso per una vacanza indimenticabile. Spazi immensi e design contemporaneo.',
-    hasPool: true,
-    priceFrom: '€250',
+    bedrooms: 3,
+    bathrooms: 2,
+    distanceToSea: 300,
+    hasPool: false,
+    hasParking: true,
+    hasAC: true,
     isNew: true,
-    rating: 5.0,
-    reviews: 12,
-    position: [40.001, 17.932],
-    distanceToSea: 300
+    category: 'luxury',
+    image: '/case/villa-azzurra.jpg',
+    gallery: [
+      '/images/houses/villa-azzurra.jpg',
+      '/images/houses/villa-azzurra-2.jpg',
+      '/images/houses/villa-azzurra-3.jpg',
+      '/images/houses/villa-azzurra-4.jpg'
+    ],
+    features: [
+      'Veranda arredata',
+      'Terrazzo',
+      'Giardino attrezzato',
+      'Cucina attrezzata',
+      'Aria condizionata',
+      'Lavatrice',
+      'Doccia esterna',
+      'Posto auto protetto'
+    ],
+    description: 'A Baia Verde, a pochi minuti a piedi dal mare, Residenza Villa Azzurra è una villetta indipendente ampia e luminosa ideale per gruppi e famiglie fino a 10 ospiti. Composta da veranda arredata, ampio soggiorno con due divani letto, cucina attrezzata, 3 camere doppie e 2 bagni con doccia. Dotazioni: aria condizionata, lavatrice, doccia esterna, giardino attrezzato e posto auto protetto.',
+    position: [40.001, 17.932]
   },
   {
     id: 'zeus',
     name: 'ZEUS',
     zone: 'Baia Verde',
     guests: 7,
-    bedrooms: 3,
-    bathrooms: 2,
-    image: '/images/houses/zeus.jpg',
-    gallery: ['/images/houses/zeus.jpg', '/images/gallipoli-beach.jpg', '/images/hero-beach.jpg'],
-    features: ['Doccia esterna', 'Giardino recintato', 'Climatizzatore', 'Wi-Fi', 'Pet-friendly'],
-    description: 'Casa indipendente con giardino recintato, perfetta anche per chi ha animali domestici. Dotata di tutti i comfort moderni per una vacanza senza pensieri.',
+    bedrooms: 2,
+    bathrooms: 1,
+    distanceToSea: 250,
+    hasPool: false,
+    hasParking: true,
     hasAC: true,
-    priceFrom: '€110',
-    rating: 4.7,
-    reviews: 31,
-    position: [40.004, 17.935],
-    distanceToSea: 250
+    isNew: false,
+    category: 'families',
+    image: '/case/zeus.jpg',
+    gallery: [
+      '/images/houses/zeus.jpg',
+      '/images/houses/zeus-2.jpg',
+      '/images/houses/zeus-3.jpg'
+    ],
+    features: [
+      'Giardino recintato',
+      'Cucina attrezzata',
+      'Climatizzatori',
+      'Lavatrice',
+      'Doccia esterna',
+      'Posto auto protetto'
+    ],
+    description: 'A Baia Verde, vicino al mare, Residenza Villetta Zeus è una villetta indipendente con spazio esterno d’accesso e giardino retrostante, ideale fino a 7 ospiti. All’interno: soggiorno con divano letto, cucina attrezzata, 2 camere da letto e 1 bagno con box doccia. Dotazioni: climatizzatori, lavatrice, doccia esterna e posto auto protetto.',
+    position: [40.003, 17.931]
   },
   {
     id: 'sirena',
@@ -132,122 +182,204 @@ const houses: House[] = [
     guests: 5,
     bedrooms: 2,
     bathrooms: 1,
-    image: '/images/houses/sirena.jpg',
-    gallery: ['/images/houses/sirena.jpg', '/images/hero-sunset.jpg', '/images/gallipoli-beach.jpg'],
-    features: ['Indipendente', 'Giardino privato', 'Vicino al mare', 'Zona tranquilla'],
-    description: 'Deliziosa villetta indipendente con giardino privato. Intimità e relax garantiti in una delle zone più tranquille di Baia Verde. Ideale per coppie e piccole famiglie.',
-    priceFrom: '€85',
-    rating: 4.9,
-    reviews: 27,
-    position: [40.005, 17.931],
-    distanceToSea: 180
+    distanceToSea: 200,
+    hasPool: false,
+    hasParking: true,
+    hasAC: true,
+    isNew: false,
+    category: 'families',
+    image: '/case/sirena.jpg',
+    gallery: [
+      '/images/houses/sirena.jpg',
+      '/images/houses/sirena-2.jpg',
+      '/images/houses/sirena-3.jpg'
+    ],
+    features: [
+      'Spazio esterno',
+      'Giardino recintato',
+      'Cucina attrezzata',
+      'Climatizzatore',
+      'Lavatrice',
+      'Doccia esterna',
+      'Posto auto protetto'
+    ],
+    description: 'A Baia Verde, a pochi minuti a piedi dal mare, Residenza Villetta Sirena è una villetta indipendente con spazio esterno e giardino retrostante, ideale fino a 5 ospiti. Dispone di soggiorno con divano letto, cucina attrezzata, 2 camere e 1 bagno con doccia. Dotazioni: climatizzatore, lavatrice, doccia esterna e posto auto protetto.',
+    position: [40.002, 17.934]
   },
   {
     id: 'armonia',
     name: 'ARMONIA',
-    zone: 'Gallipoli Centro',
+    zone: 'Lido San Giovanni',
     guests: 5,
     bedrooms: 2,
     bathrooms: 1,
-    image: '/images/houses/armonia.jpg',
-    gallery: ['/images/houses/armonia.jpg', '/images/hero-interior.jpg', '/images/hero-sunset.jpg'],
-    features: ['Balcone vista mare', 'Centro storico', 'Ristrutturato', 'Climatizzatore', 'Romantico'],
-    description: 'Incantevole appartamento nel cuore del centro storico con balcone vista mare. Recentemente ristrutturato con gusto, conserva il fascino delle case gallipoline tradizionali.',
+    distanceToSea: 100,
+    hasPool: false,
+    hasParking: false,
     hasAC: true,
-    priceFrom: '€100',
-    rating: 4.8,
-    reviews: 42,
-    position: [40.053, 17.967],
-    distanceToSea: 50
+    isNew: false,
+    category: 'couples',
+    image: '/case/armonia.jpg',
+    gallery: [
+      '/images/houses/armonia.jpg',
+      '/images/houses/armonia-2.jpg',
+      '/images/houses/armonia-3.jpg'
+    ],
+    features: [
+      'Balcone vista mare',
+      'Cucina attrezzata',
+      'Climatizzatori',
+      'Lavatrice',
+      'TV'
+    ],
+    description: 'In zona Lido San Giovanni, a circa 100 metri dal mare e a pochi minuti da Baia Verde, Residenza Armonia è un trilocale moderno ideale fino a 5 ospiti. Composto da sala pranzo con divano letto e cucina attrezzata, 2 camere da letto e 1 bagno con box doccia. Completa la soluzione un balcone vista mare arredato; dotazioni: lavatrice, TV e climatizzatori.',
+    position: [40.015, 17.949]
   },
   {
-    id: 'gemma',
+    id: 'villetta-gemma-c',
     name: 'VILLETTA GEMMA C',
-    zone: 'Gallipoli',
-    guests: 4,
+    zone: 'Lido San Giovanni',
+    guests: 7,
     bedrooms: 2,
     bathrooms: 1,
-    image: '/images/houses/villetta-gemma.jpg',
-    gallery: ['/images/houses/villetta-gemma.jpg', '/images/hero-interior.jpg', '/images/hero-beach.jpg'],
-    features: ['Nuova costruzione', 'Doccia esterna', 'Design moderno', 'Efficiente', 'Eco-friendly'],
-    description: 'Nuovissima villetta con finiture di pregio e doccia esterna. Modernità e comfort in un unico elegante pacchetto. Costruita con criteri di efficienza energetica.',
+    distanceToSea: 100,
+    hasPool: false,
+    hasParking: false,
+    hasAC: true,
     isNew: true,
-    priceFrom: '€95',
-    rating: 4.9,
-    reviews: 8,
-    position: [40.052, 17.965],
-    distanceToSea: 400
+    category: 'families',
+    image: '/case/villetta-gemma-c.jpg',
+    gallery: [
+      '/images/houses/gemma-c.jpg',
+      '/images/houses/gemma-c-2.jpg',
+      '/images/houses/gemma-c-3.jpg'
+    ],
+    features: [
+      'Nuova costruzione',
+      'Balcone arredato',
+      'Cucina attrezzata',
+      'Aria condizionata in ogni ambiente',
+      'Lavatrice',
+      'Doccia esterna'
+    ],
+    description: 'In zona Lido San Giovanni, a pochi minuti dal mare, Residenza Villetta Gemma C è un villino di nuova costruzione al primo piano ideale fino a 7 ospiti. Dispone di ampio salone climatizzato con divano letto e cucina attrezzata, 2 camere da letto climatizzate e 1 bagno con box doccia. Balcone arredato, doccia esterna e lavatrice completano l’alloggio.',
+    position: [40.012, 17.943]
   },
   {
     id: 'baiacri',
     name: 'BAIACRI',
-    zone: 'Gallipoli Centro',
+    zone: 'Lido San Giovanni',
     guests: 6,
-    bedrooms: 3,
-    bathrooms: 2,
-    image: '/images/houses/baiacri.jpg',
-    gallery: ['/images/houses/baiacri.jpg', '/images/hero-sunset.jpg', '/images/hero-interior.jpg'],
-    features: ['Balcone vista mare', 'Tende parasole', 'Spazioso', 'Luminoso', 'Centrale'],
-    description: 'Ampio appartamento con balcone vista mare e tende parasole. Vista mozzafiato sul golfo di Gallipoli. Posizione centrale perfetta per esplorare la città.',
-    priceFrom: '€115',
-    rating: 4.8,
-    reviews: 35,
-    position: [40.054, 17.966],
-    distanceToSea: 100
+    bedrooms: 2,
+    bathrooms: 1,
+    distanceToSea: 100,
+    hasPool: false,
+    hasParking: false,
+    hasAC: true,
+    isNew: true,
+    category: 'couples',
+    image: '/case/baiacri.jpg',
+    gallery: [
+      '/images/houses/baiacri.jpg',
+      '/images/houses/baiacri-2.jpg',
+      '/images/houses/baiacri-3.jpg'
+    ],
+    features: [
+      'Balcone vista mare',
+      'Cucina abitabile attrezzata',
+      'Climatizzatori',
+      'Lavatrice',
+      'TV'
+    ],
+    description: 'In zona Lido San Giovanni, a circa 100 metri dal mare, Residenza Baiacri è un trilocale in stile moderno ideale fino a 6 ospiti. Composto da ampio salone con divano letto, 2 camere da letto climatizzate, cucina abitabile attrezzata e 1 bagno con doccia. Balcone vista mare; dotazioni: lavatrice, TV e climatizzatori.',
+    position: [40.014, 17.945]
   },
   {
     id: 'miramare',
     name: 'MIRAMARE',
-    zone: 'Gallipoli',
+    zone: 'Lido San Giovanni',
     guests: 8,
     bedrooms: 3,
     bathrooms: 2,
-    image: '/images/houses/miramare.jpg',
-    gallery: ['/images/houses/miramare.jpg', '/images/hero-interior.jpg', '/images/gallipoli-beach.jpg'],
-    features: ['3 camere', '2 bagni', 'Ampio soggiorno', 'Vicino al centro', 'Family-friendly'],
-    description: 'Spazioso appartamento ideale per gruppi di amici o famiglie numerose. Comfort e praticità a pochi minuti dal centro storico e dalle spiagge.',
-    priceFrom: '€130',
-    rating: 4.7,
-    reviews: 29,
-    position: [40.051, 17.964],
-    distanceToSea: 350
+    distanceToSea: 50,
+    hasPool: false,
+    hasParking: false,
+    hasAC: true,
+    isNew: false,
+    category: 'luxury',
+    image: '/case/miramare.jpg',
+    gallery: [
+      '/images/houses/miramare.jpg',
+      '/images/houses/miramare-2.jpg',
+      '/images/houses/miramare-3.jpg'
+    ],
+    features: [
+      'Balcone vista mare',
+      'Cucina attrezzata',
+      'Climatizzatori',
+      'Lavatrice',
+      'Ventilatori a soffitto'
+    ],
+    description: 'In zona Lido San Giovanni, a pochi passi dal mare, Residenza Miramare è un quadrilocale ristrutturato ideale fino a 8 ospiti. Dispone di 3 camere doppie, 2 bagni con box doccia e un open space con divano letto e cucina attrezzata. Balcone vista mare; dotazioni: lavatrice, climatizzatori e ventilatori a soffitto.',
+    position: [40.016, 17.948]
   },
   {
     id: 'la-perla',
     name: 'LA PERLA',
-    zone: 'Gallipoli',
+    zone: 'Lido San Giovanni',
     guests: 10,
-    bedrooms: 4,
-    bathrooms: 3,
-    image: '/images/houses/la-perla.jpg',
-    gallery: ['/images/houses/la-perla.jpg', '/images/hero-sunset.jpg', '/images/hero-interior.jpg'],
-    features: ['Climatizzato', 'Piscina privata', '4 bagni', 'Luxury', 'Vista panoramica'],
-    description: 'Villa di lusso con piscina privata e clima in tutti gli ambienti. L\'eccellenza assoluta per chi cerca il massimo. Design raffinato e servizi esclusivi.',
-    hasPool: true,
+    bedrooms: 3,
+    bathrooms: 2,
+    distanceToSea: 100,
+    hasPool: false,
+    hasParking: false,
     hasAC: true,
-    priceFrom: '€280',
-    rating: 5.0,
-    reviews: 15,
-    position: [40.050, 17.963],
-    distanceToSea: 500
+    isNew: false,
+    category: 'luxury',
+    image: '/case/la-perla.jpg',
+    gallery: [
+      '/images/houses/la-perla.jpg',
+      '/images/houses/la-perla-2.jpg',
+      '/images/houses/la-perla-3.jpg'
+    ],
+    features: [
+      'Balcone arredato',
+      'Cucina attrezzata',
+      'Climatizzatori',
+      'Lavatrice',
+      'Ventilatori a soffitto'
+    ],
+    description: 'In zona Lido San Giovanni, a circa 100 metri dal mare, Residenza La Perla è un quadrilocale ristrutturato ideale per gruppi e famiglie fino a 10 ospiti. Composto da soggiorno con divano letto, cucina con angolo cottura attrezzato, 3 camere da letto e 2 bagni con doccia. Balcone arredato; dotazioni: lavatrice, climatizzatori e ventilatori a soffitto.',
+    position: [40.011, 17.944]
   },
   {
     id: 'mondonuovo',
     name: 'MONDONUOVO',
-    zone: 'Gallipoli',
+    zone: 'Santa Maria al Bagno',
     guests: 7,
-    bedrooms: 3,
-    bathrooms: 2,
-    image: '/images/houses/mondonuovo.jpg',
-    gallery: ['/images/houses/mondonuovo.jpg', '/images/hero-beach.jpg', '/images/gallipoli-beach.jpg'],
-    features: ['Piscina residence', 'Campo tennis', 'Area giochi', 'Sicurezza 24h', 'Resort'],
-    description: 'Appartamento in residence esclusivo con piscina e servizi. Vacanza sicura e divertente per tutta la famiglia. Ideale per chi cerca servizi di livello alberghiero.',
+    bedrooms: 1,
+    bathrooms: 1,
+    distanceToSea: 150,
     hasPool: true,
-    priceFrom: '€105',
-    rating: 4.6,
-    reviews: 38,
-    position: [40.055, 17.968],
-    distanceToSea: 600
+    hasParking: false,
+    hasAC: false,
+    isNew: true,
+    category: 'families',
+    image: '/case/mondonuovo.jpg',
+    gallery: [
+      '/images/houses/mondonuovo.jpg',
+      '/images/houses/mondonuovo-2.jpg',
+      '/images/houses/mondonuovo-3.jpg'
+    ],
+    features: [
+      'Contesto tranquillo',
+      'Spazi esterni verdi',
+      'Aree comuni con piscina (in residence)',
+      'Zona giorno luminosa',
+      'Bagno con box doccia'
+    ],
+    description: 'A Santa Maria al Bagno, in un contesto residenziale curato e tranquillo, Residenza Mondonuovo è ideale per una vacanza tra relax e mare fino a 7 ospiti. Ambienti moderni e luminosi con zona giorno e accesso diretto all’esterno, camere confortevoli e bagno con box doccia. All’esterno sono presenti spazi verdi e aree comuni con piscina (in residence).',
+    position: [40.150, 17.990]
   }
 ];
 
