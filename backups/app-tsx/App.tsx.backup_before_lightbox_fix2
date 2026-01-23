@@ -1,0 +1,1755 @@
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  MapPin, Users, Bed, Bath, Car, Waves, Wind, Wifi, 
+  Star, Heart, Calendar, MessageCircle, Shield, CheckCircle, ChevronDown,
+  Phone, Sparkles, Home, Search, Clock,
+  ArrowRight, X, ChevronLeft, ChevronRight, Maximize2,
+  Sun, Coffee, Dumbbell, Camera, Navigation
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { toast } from 'sonner';
+import Lightbox from 'yet-another-react-lightbox';
+import 'yet-another-react-lightbox/styles.css';
+
+
+
+const WhatsAppIcon = ({ className = '' }: { className?: string }) => (
+  <svg
+    viewBox="0 0 448 512"
+    className={className}
+    fill="currentColor"
+    aria-hidden="true"
+    focusable="false"
+  >
+    <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 222-99.6 222-222 0-59.3-25.2-115-65.1-156.9zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-82.8 184.6-184.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
+  </svg>
+);
+
+interface House {
+  id: string;
+  name: string;
+  zone: string;
+  guests: number;
+  bedrooms: number;
+  bathrooms: number;
+  image: string;
+  gallery: string[];
+  features: string[];
+  description: string;
+  priceFrom?: string;
+  isNew?: boolean;
+  hasPool?: boolean;
+  hasParking?: boolean;
+  hasAC?: boolean;
+  rating?: number;
+  reviews?: number;
+  position: [number, number];
+  distanceToSea?: number;
+
+  category?: string;}
+
+const houses: House[] = [
+  {
+    id: 'atena',
+    name: 'ATENA',
+    zone: 'Baia Verde',
+    guests: 9,
+    bedrooms: 3,
+    bathrooms: 2,
+    distanceToSea: 200,
+    hasPool: false,
+    hasParking: false,
+    hasAC: true,
+    isNew: false,
+    category: 'families',
+    image: '/case/atena.jpg',
+    gallery: [
+      '/images/houses/atena.jpg',
+      '/images/houses/atena-2.jpg',
+      '/images/houses/atena-3.jpg'
+    ],
+    features: [
+      'Cucina attrezzata',
+      'Balcone arredato',
+      'Climatizzatori',
+      'Lavatrice',
+      'TV'
+    ],
+    description: 'A Baia Verde, a pochi minuti a piedi dal mare e dai principali stabilimenti, Residenza Atena è un ampio quadrilocale ideale per famiglie e gruppi fino a 9 ospiti. Dispone di zona giorno con angolo cottura attrezzato e balcone arredato, 3 camere (una quadrupla e due doppie) e 2 bagni con box doccia. Dotazioni: climatizzatori, lavatrice e TV.',
+    position: [40.003, 17.933]
+  },
+  {
+    id: 'baia-verde',
+    name: 'BAIA VERDE APARTMENT',
+    zone: 'Baia Verde',
+    guests: 6,
+    bedrooms: 2,
+    bathrooms: 1,
+    distanceToSea: 250,
+    hasPool: false,
+    hasParking: true,
+    hasAC: false,
+    isNew: true,
+    category: 'couples',
+    image: '/case/baia-verde.jpg',
+    gallery: [
+      '/images/houses/baia-verde.jpg',
+      '/images/houses/baia-verde-2.jpg',
+      '/images/houses/baia-verde-3.jpg'
+    ],
+    features: [
+      'Nuova costruzione',
+      'Cucina attrezzata',
+      'Terrazza per mangiare fuori',
+      'Doccia esterna + lavapiedi',
+      'Parcheggio privato custodito'
+    ],
+    description: 'Nel cuore di Baia Verde, a pochi minuti a piedi da spiagge e locali, Baia Verde Apartment è un appartamento di nuova costruzione che ospita comodamente fino a 6 persone. Composto da 2 camere da letto, 1 bagno interno, cucina attrezzata e terrazza per pranzare e cenare all’aperto. A disposizione anche doccia esterna con lavapiedi e parcheggio privato custodito.',
+    position: [40.001, 17.932]
+  },
+  {
+    id: 'villa-azzurra',
+    name: 'VILLA AZZURRA',
+    zone: 'Baia Verde',
+    guests: 10,
+    bedrooms: 3,
+    bathrooms: 2,
+    distanceToSea: 300,
+    hasPool: false,
+    hasParking: true,
+    hasAC: true,
+    isNew: true,
+    category: 'luxury',
+    image: '/case/villa-azzurra.jpg',
+    gallery: [
+      '/images/houses/villa-azzurra.jpg',
+      '/images/houses/villa-azzurra-2.jpg',
+      '/images/houses/villa-azzurra-3.jpg',
+      '/images/houses/villa-azzurra-4.jpg'
+    ],
+    features: [
+      'Veranda arredata',
+      'Terrazzo',
+      'Giardino attrezzato',
+      'Cucina attrezzata',
+      'Aria condizionata',
+      'Lavatrice',
+      'Doccia esterna',
+      'Posto auto protetto'
+    ],
+    description: 'A Baia Verde, a pochi minuti a piedi dal mare, Residenza Villa Azzurra è una villetta indipendente ampia e luminosa ideale per gruppi e famiglie fino a 10 ospiti. Composta da veranda arredata, ampio soggiorno con due divani letto, cucina attrezzata, 3 camere doppie e 2 bagni con doccia. Dotazioni: aria condizionata, lavatrice, doccia esterna, giardino attrezzato e posto auto protetto.',
+    position: [40.001, 17.932]
+  },
+  {
+    id: 'zeus',
+    name: 'ZEUS',
+    zone: 'Baia Verde',
+    guests: 7,
+    bedrooms: 2,
+    bathrooms: 1,
+    distanceToSea: 250,
+    hasPool: false,
+    hasParking: true,
+    hasAC: true,
+    isNew: false,
+    category: 'families',
+    image: '/case/zeus.jpg',
+    gallery: [
+      '/images/houses/zeus.jpg',
+      '/images/houses/zeus-2.jpg',
+      '/images/houses/zeus-3.jpg'
+    ],
+    features: [
+      'Giardino recintato',
+      'Cucina attrezzata',
+      'Climatizzatori',
+      'Lavatrice',
+      'Doccia esterna',
+      'Posto auto protetto'
+    ],
+    description: 'A Baia Verde, vicino al mare, Residenza Villetta Zeus è una villetta indipendente con spazio esterno d’accesso e giardino retrostante, ideale fino a 7 ospiti. All’interno: soggiorno con divano letto, cucina attrezzata, 2 camere da letto e 1 bagno con box doccia. Dotazioni: climatizzatori, lavatrice, doccia esterna e posto auto protetto.',
+    position: [40.003, 17.931]
+  },
+  {
+    id: 'sirena',
+    name: 'SIRENA',
+    zone: 'Baia Verde',
+    guests: 5,
+    bedrooms: 2,
+    bathrooms: 1,
+    distanceToSea: 200,
+    hasPool: false,
+    hasParking: true,
+    hasAC: true,
+    isNew: false,
+    category: 'families',
+    image: '/case/sirena.jpg',
+    gallery: [
+      '/images/houses/sirena.jpg',
+      '/images/houses/sirena-2.jpg',
+      '/images/houses/sirena-3.jpg'
+    ],
+    features: [
+      'Spazio esterno',
+      'Giardino recintato',
+      'Cucina attrezzata',
+      'Climatizzatore',
+      'Lavatrice',
+      'Doccia esterna',
+      'Posto auto protetto'
+    ],
+    description: 'A Baia Verde, a pochi minuti a piedi dal mare, Residenza Villetta Sirena è una villetta indipendente con spazio esterno e giardino retrostante, ideale fino a 5 ospiti. Dispone di soggiorno con divano letto, cucina attrezzata, 2 camere e 1 bagno con doccia. Dotazioni: climatizzatore, lavatrice, doccia esterna e posto auto protetto.',
+    position: [40.002, 17.934]
+  },
+  {
+    id: 'armonia',
+    name: 'ARMONIA',
+    zone: 'Lido San Giovanni',
+    guests: 5,
+    bedrooms: 2,
+    bathrooms: 1,
+    distanceToSea: 100,
+    hasPool: false,
+    hasParking: false,
+    hasAC: true,
+    isNew: false,
+    category: 'couples',
+    image: '/case/armonia.jpg',
+    gallery: [
+      '/images/houses/armonia.jpg',
+      '/images/houses/armonia-2.jpg',
+      '/images/houses/armonia-3.jpg'
+    ],
+    features: [
+      'Balcone vista mare',
+      'Cucina attrezzata',
+      'Climatizzatori',
+      'Lavatrice',
+      'TV'
+    ],
+    description: 'In zona Lido San Giovanni, a circa 100 metri dal mare e a pochi minuti da Baia Verde, Residenza Armonia è un trilocale moderno ideale fino a 5 ospiti. Composto da sala pranzo con divano letto e cucina attrezzata, 2 camere da letto e 1 bagno con box doccia. Completa la soluzione un balcone vista mare arredato; dotazioni: lavatrice, TV e climatizzatori.',
+    position: [40.015, 17.949]
+  },
+  {
+    id: 'villetta-gemma-c',
+    name: 'VILLETTA GEMMA C',
+    zone: 'Lido San Giovanni',
+    guests: 7,
+    bedrooms: 2,
+    bathrooms: 1,
+    distanceToSea: 100,
+    hasPool: false,
+    hasParking: false,
+    hasAC: true,
+    isNew: true,
+    category: 'families',
+    image: '/case/villetta-gemma-c.jpg',
+    gallery: [
+      '/images/houses/gemma-c.jpg',
+      '/images/houses/gemma-c-2.jpg',
+      '/images/houses/gemma-c-3.jpg'
+    ],
+    features: [
+      'Nuova costruzione',
+      'Balcone arredato',
+      'Cucina attrezzata',
+      'Aria condizionata in ogni ambiente',
+      'Lavatrice',
+      'Doccia esterna'
+    ],
+    description: 'In zona Lido San Giovanni, a pochi minuti dal mare, Residenza Villetta Gemma C è un villino di nuova costruzione al primo piano ideale fino a 7 ospiti. Dispone di ampio salone climatizzato con divano letto e cucina attrezzata, 2 camere da letto climatizzate e 1 bagno con box doccia. Balcone arredato, doccia esterna e lavatrice completano l’alloggio.',
+    position: [40.012, 17.943]
+  },
+  {
+    id: 'baiacri',
+    name: 'BAIACRI',
+    zone: 'Lido San Giovanni',
+    guests: 6,
+    bedrooms: 2,
+    bathrooms: 1,
+    distanceToSea: 100,
+    hasPool: false,
+    hasParking: false,
+    hasAC: true,
+    isNew: true,
+    category: 'couples',
+    image: '/case/baiacri.jpg',
+    gallery: [
+      '/images/houses/baiacri.jpg',
+      '/images/houses/baiacri-2.jpg',
+      '/images/houses/baiacri-3.jpg'
+    ],
+    features: [
+      'Balcone vista mare',
+      'Cucina abitabile attrezzata',
+      'Climatizzatori',
+      'Lavatrice',
+      'TV'
+    ],
+    description: 'In zona Lido San Giovanni, a circa 100 metri dal mare, Residenza Baiacri è un trilocale in stile moderno ideale fino a 6 ospiti. Composto da ampio salone con divano letto, 2 camere da letto climatizzate, cucina abitabile attrezzata e 1 bagno con doccia. Balcone vista mare; dotazioni: lavatrice, TV e climatizzatori.',
+    position: [40.014, 17.945]
+  },
+  {
+    id: 'miramare',
+    name: 'MIRAMARE',
+    zone: 'Lido San Giovanni',
+    guests: 8,
+    bedrooms: 3,
+    bathrooms: 2,
+    distanceToSea: 50,
+    hasPool: false,
+    hasParking: false,
+    hasAC: true,
+    isNew: false,
+    category: 'luxury',
+    image: '/case/miramare.jpg',
+    gallery: [
+      '/images/houses/miramare.jpg',
+      '/images/houses/miramare-2.jpg',
+      '/images/houses/miramare-3.jpg'
+    ],
+    features: [
+      'Balcone vista mare',
+      'Cucina attrezzata',
+      'Climatizzatori',
+      'Lavatrice',
+      'Ventilatori a soffitto'
+    ],
+    description: 'In zona Lido San Giovanni, a pochi passi dal mare, Residenza Miramare è un quadrilocale ristrutturato ideale fino a 8 ospiti. Dispone di 3 camere doppie, 2 bagni con box doccia e un open space con divano letto e cucina attrezzata. Balcone vista mare; dotazioni: lavatrice, climatizzatori e ventilatori a soffitto.',
+    position: [40.016, 17.948]
+  },
+  {
+    id: 'la-perla',
+    name: 'LA PERLA',
+    zone: 'Lido San Giovanni',
+    guests: 10,
+    bedrooms: 3,
+    bathrooms: 2,
+    distanceToSea: 100,
+    hasPool: false,
+    hasParking: false,
+    hasAC: true,
+    isNew: false,
+    category: 'luxury',
+    image: '/case/la-perla.jpg',
+    gallery: [
+      '/images/houses/la-perla.jpg',
+      '/images/houses/la-perla-2.jpg',
+      '/images/houses/la-perla-3.jpg'
+    ],
+    features: [
+      'Balcone arredato',
+      'Cucina attrezzata',
+      'Climatizzatori',
+      'Lavatrice',
+      'Ventilatori a soffitto'
+    ],
+    description: 'In zona Lido San Giovanni, a circa 100 metri dal mare, Residenza La Perla è un quadrilocale ristrutturato ideale per gruppi e famiglie fino a 10 ospiti. Composto da soggiorno con divano letto, cucina con angolo cottura attrezzato, 3 camere da letto e 2 bagni con doccia. Balcone arredato; dotazioni: lavatrice, climatizzatori e ventilatori a soffitto.',
+    position: [40.011, 17.944]
+  },
+  {
+    id: 'mondonuovo',
+    name: 'MONDONUOVO',
+    zone: 'Santa Maria al Bagno',
+    guests: 7,
+    bedrooms: 1,
+    bathrooms: 1,
+    distanceToSea: 150,
+    hasPool: true,
+    hasParking: false,
+    hasAC: false,
+    isNew: true,
+    category: 'families',
+    image: '/case/mondonuovo.jpg',
+    gallery: [
+      '/images/houses/mondonuovo.jpg',
+      '/images/houses/mondonuovo-2.jpg',
+      '/images/houses/mondonuovo-3.jpg'
+    ],
+    features: [
+      'Contesto tranquillo',
+      'Spazi esterni verdi',
+      'Aree comuni con piscina (in residence)',
+      'Zona giorno luminosa',
+      'Bagno con box doccia'
+    ],
+    description: 'A Santa Maria al Bagno, in un contesto residenziale curato e tranquillo, Residenza Mondonuovo è ideale per una vacanza tra relax e mare fino a 7 ospiti. Ambienti moderni e luminosi con zona giorno e accesso diretto all’esterno, camere confortevoli e bagno con box doccia. All’esterno sono presenti spazi verdi e aree comuni con piscina (in residence).',
+    position: [40.150, 17.990]
+  }
+];
+
+const faqs = [
+  {
+    question: 'Come posso prenotare una casa?',
+    answer: 'È semplice e veloce! Scegli la casa che preferisci, clicca su "Chiedi su WhatsApp" e invia il messaggio precompilato. Ti risponderemo entro pochi minuti con disponibilità e preventivo. Nessuna prenotazione online, tutto direttamente con noi.'
+  },
+  {
+    question: 'Qual è la politica di cancellazione?',
+    answer: 'Capiremo che i piani possono cambiare. Offriamo cancellazione gratuita fino a 30 giorni prima dell\'arrivo. Per cancellazioni entro 30 giorni, applicamo una politica flessibile che valutiamo caso per caso.'
+  },
+  {
+    question: 'Le case sono provviste di biancheria?',
+    answer: 'Sì, tutte le nostre case includono biancheria da letto, asciugamani da bagno e strofinacci per la cucina. La biancheria viene cambiata settimanalmente per soggiorni lunghi.'
+  },
+  {
+    question: 'Orari check-in e check-out?',
+    answer: 'Check-in: dalle 15:00 alle 20:00 (orari diversi concordabili). Check-out: entro le 10:00. Siamo flessibili quando possibile, basta chiedere!'
+  },
+  {
+    question: 'Accettate animali domestici?',
+    answer: 'Alcune delle nostre proprietà sono pet-friendly. Contattaci per sapere quali case accettano animali. Richiediamo una cauzione aggiuntiva di €50 per animali.'
+  },
+  {
+    question: 'Cosa include il prezzo?',
+    answer: 'Il prezzo include: alloggio, biancheria, consumi (acqua, luce, gas), Wi-Fi, pulizie iniziali e finali, assistenza durante il soggiorno. Tasse di soggiorno escluse (€1 al giorno a persona).'
+  }
+];
+
+const reviews = [
+  {
+    name: 'Maria Rossi',
+    location: 'Milano',
+    avatar: 'M.R',
+    rating: 5,
+    text: 'Esperienza fantastica! Casa pulita, proprietari gentilissimi e sempre disponibili. Posizione perfetta per raggiungere le spiagge più belle. Torneremo sicuramente!',
+    house: 'VILLA AZZURRA',
+    date: '2 settimane fa'
+  },
+  {
+    name: 'Marco Bianchi',
+    location: 'Roma',
+    avatar: 'M.B',
+    rating: 5,
+    text: 'Ho prenotato con Salento Stay per la terza volta consecutiva. Servizio impeccabile, case sempre come da descrizione. La prenotazione via WhatsApp è velocissima!',
+    house: 'ATENA',
+    date: '1 mese fa'
+  },
+  {
+    name: 'Giulia e Luca',
+    location: 'Torino',
+    avatar: 'G.L',
+    rating: 5,
+    text: 'Settimana perfetta a Gallipoli. La casa ARMONIA ha quel balcone vista mare che ci ha fatto innamorare. Consigliatissimo!',
+    house: 'ARMONIA',
+    date: '3 settimane fa'
+  },
+  {
+    name: 'Famiglia Verdi',
+    location: 'Bologna',
+    avatar: 'F.V',
+    rating: 5,
+    text: 'Siamo stati in 8 nella MIRAMARE. Spaziosa, pulita, vicina al centro ma in zona tranquilla. I bambini non volevano più andare via!',
+    house: 'MIRAMARE',
+    date: '1 mese fa'
+  }
+];
+
+const stats = [
+  { value: 20, suffix: '+', label: 'Case disponibili', icon: Home },
+  { value: 500, suffix: '+', label: 'Ospiti soddisfatti', icon: Users },
+  { value: 4.8, suffix: '/5', label: 'Valutazione media', icon: Star },
+  { value: 5, suffix: 'min', label: 'Tempo di risposta', icon: Clock }
+];
+
+const services = [
+  { icon: Wifi, title: 'Wi-Fi Gratuito', description: 'Connessione ad alta velocità' },
+  { icon: Car, title: 'Parcheggio', description: 'Incluso in molte proprietà' },
+  { icon: Waves, title: 'Vicino al Mare', description: 'Massimo 600m dalla spiaggia' },
+  { icon: Wind, title: 'Aria Condizionata', description: 'In tutte le proprietà' },
+  { icon: Coffee, title: 'Colazione', description: 'Opzionale su richiesta' },
+  { icon: Dumbbell, title: 'Attività', description: 'Sport e escursioni' }
+];
+
+function App() {
+  const [selectedGuests, setSelectedGuests] = useState<string>('all');
+  const [selectedZone, setSelectedZone] = useState<string>('all');
+  const [sortBy] = useState<string>('featured');
+  const [filteredHouses, setFilteredHouses] = useState<House[]>(houses);
+  const [selectedHouse, setSelectedHouse] = useState<House | null>(null);
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const scrolledRef = useRef(false);
+  const [formData, setFormData] = useState({
+    checkin: '',
+    checkout: '',
+    guests: '',
+    budget: '',
+    notes: ''
+  });
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [lightboxImages, setLightboxImages] = useState<any[]>([]);
+  const [activeSection, setActiveSection] = useState('top');
+  const [animatedStats, setAnimatedStats] = useState<number[]>(stats.map(() => 0));
+  const statsRef = useRef<HTMLDivElement>(null);
+  const [statsInView, setStatsInView] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const y = window.scrollY || 0;
+      if (!scrolledRef.current && y > 80) {
+        scrolledRef.current = true;
+        setScrolled(true);
+      } else if (scrolledRef.current && y < 40) {
+        scrolledRef.current = false;
+        setScrolled(false);
+      }
+      
+      const sections = ['top', 'opzioni', 'case', 'faq', 'form'];
+      for (const section of sections) {
+        const element = document.getElementById(section);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= 100 && rect.bottom >= 100) {
+            setActiveSection(section);
+            break;
+          }
+        }
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+  // Lightbox: mostra SOLO immagini reali in /case/ (no demo)
+  const safeSlidesForLightbox = (arr: any[]) => {
+    const a = Array.isArray(arr) ? arr : [];
+    const norm = a.map((x: any) => (typeof x === "string" ? x : (x?.src || x?.url || ""))).filter(Boolean);
+    const onlyCase = norm.filter((u: string) => u.startsWith("/case/"));
+    const uniq = Array.from(new Set(onlyCase));
+    return uniq.map((src: string) => ({ src }));
+  };
+
+return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    let filtered = [...houses];
+    
+    if (selectedGuests !== 'all') {
+      const [min, max] = selectedGuests.split('-').map(Number);
+      if (max) {
+        filtered = filtered.filter(h => h.guests >= min && h.guests <= max);
+      } else {
+        filtered = filtered.filter(h => h.guests >= min);
+      }
+    }
+    
+    if (selectedZone !== 'all') {
+      filtered = filtered.filter(h => h.zone === selectedZone);
+    }
+    
+    switch (sortBy) {
+      case 'guests-asc':
+        filtered.sort((a, b) => a.guests - b.guests);
+        break;
+      case 'guests-desc':
+        filtered.sort((a, b) => b.guests - a.guests);
+        break;
+      case 'price-asc':
+        filtered.sort((a, b) => {
+          const priceA = parseInt(a.priceFrom?.replace('€', '') || '0');
+          const priceB = parseInt(b.priceFrom?.replace('€', '') || '0');
+          return priceA - priceB;
+        });
+        break;
+      case 'price-desc':
+        filtered.sort((a, b) => {
+          const priceA = parseInt(a.priceFrom?.replace('€', '') || '0');
+          const priceB = parseInt(b.priceFrom?.replace('€', '') || '0');
+          return priceB - priceA;
+        });
+        break;
+      case 'name-asc':
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      default:
+        break;
+    }
+    
+    setFilteredHouses(filtered);
+  }, [selectedGuests, selectedZone, sortBy]);
+
+  useEffect(() => {
+    if (statsInView) {
+      const duration = 2000;
+      const steps = 60;
+      const interval = duration / steps;
+      
+      let step = 0;
+      const timer = setInterval(() => {
+        step++;
+        setAnimatedStats(stats.map(stat => {
+          const progress = Math.min(step / steps, 1);
+          const easeProgress = 1 - Math.pow(1 - progress, 3);
+          return stat.value * easeProgress;
+        }));
+        
+        if (step >= steps) {
+          clearInterval(timer);
+        }
+      }, interval);
+      
+      return () => clearInterval(timer);
+    }
+  }, [statsInView]);
+
+  const toggleFavorite = (houseId: string) => {
+    setFavorites(prev => 
+      prev.includes(houseId) 
+        ? prev.filter(id => id !== houseId)
+        : [...prev, houseId]
+    );
+    toast.success(favorites.includes(houseId) ? 'Rimosso dai preferiti' : 'Aggiunto ai preferiti', {
+      position: 'top-center'
+    });
+  };
+
+  const handleWhatsApp = (house: House) => {
+    const message = `Ciao! Vorrei ricevere disponibilità per ${house.name}.\nZona: ${house.zone}\nOspiti: ${house.guests}\nGrazie!`;
+    const url = `https://wa.me/393292272939?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  };
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.checkin || !formData.checkout || !formData.guests) {
+      toast.error('Compila tutti i campi obbligatori');
+      return;
+    }
+    const message = `Ciao! Vorrei ricevere disponibilità per una casa a Gallipoli.\n\nCheck-in: ${formData.checkin}\nCheck-out: ${formData.checkout}\nOspiti: ${formData.guests}${formData.budget ? `\nBudget: ${formData.budget}` : ''}${formData.notes ? `\nNote: ${formData.notes}` : ''}\n\nGrazie!`;
+    const url = `https://wa.me/393292272939?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
+  };
+
+  const openLightbox = (house: House, index: number) => {
+    setLightboxImages(house.gallery.map(img => ({ src: img })));
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+    setShowMobileMenu(false);
+  };
+
+  return (
+    <div className="min-h-screen overflow-x-hidden bg-gradient-to-b from-sky-50 to-white">
+      {/* Header */}
+      <motion.header 
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-transparent'}`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 md:h-20">
+            <motion.a 
+              href="#top" 
+              className="flex items-center gap-3 group"
+              whileHover={{ scale: 1.02 }}
+            >
+              <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center shadow-lg transition-transform group-hover:scale-105 ${
+                scrolled ? 'bg-gradient-to-br from-teal-500 to-teal-600' : 'bg-white/20 backdrop-blur-sm'
+              }`}>
+                <Home className={`w-5 h-5 md:w-6 md:h-6 ${scrolled ? 'text-white' : 'text-white'}`} />
+              </div>
+              <div>
+                <div className={`font-bold text-lg md:text-xl ${scrolled ? 'text-gray-800' : 'text-white'}`} style={{ fontFamily: 'Playfair Display, serif' }}>Salento Stay</div>
+                <div className={`text-xs md:text-sm ${scrolled ? 'text-gray-500' : 'text-white/80'}`}>Case Vacanza Gallipoli</div>
+              </div>
+            </motion.a>
+
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center gap-8">
+              {[
+                { label: 'Posti', id: 'opzioni' },
+                { label: 'Case', id: 'case' },
+                                { label: 'FAQ', id: 'faq' },
+                { label: 'Contatti', id: 'form' }
+              ].map(item => (
+                <button 
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`text-sm font-medium transition-colors relative ${
+                    activeSection === item.id ? 'text-teal-600' : scrolled ? 'text-gray-700 hover:text-teal-600' : 'text-white/90 hover:text-white'
+                  }`}
+                >
+                  {item.label}
+                  {activeSection === item.id && (
+                    <motion.div 
+                      layoutId="navbar-indicator"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-teal-500"
+                    />
+                  )}
+                </button>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-3">
+              <a 
+                href="https://wa.me/393292272939" 
+                target="_blank"
+                className="hidden sm:flex items-center gap-2 bg-[#25D366] text-white px-5 py-2.5 rounded-full font-medium shadow-lg shadow-green-500/30 hover:bg-[#1ebe57] hover:shadow-xl hover:shadow-green-500/40 transition-all hover:-translate-y-0.5 text-sm"
+              >
+                <WhatsAppIcon className="w-4 h-4 text-white" />
+                WhatsApp
+              </a>
+              
+              {/* Mobile menu button */}
+              <button 
+                onClick={() => setShowMobileMenu(!showMobileMenu)}
+                className={`md:hidden p-2 rounded-lg transition-colors ${scrolled ? 'hover:bg-gray-100' : 'hover:bg-white/10'}`}
+              >
+                <ChevronDown className={`w-5 h-5 ${scrolled ? 'text-gray-700' : 'text-white'} transition-transform ${showMobileMenu ? 'rotate-180' : ''}`} />
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile menu */}
+          <AnimatePresence>
+            {showMobileMenu && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="md:hidden overflow-hidden px-4 pb-4"
+              >
+                <nav className="flex flex-col gap-1 p-2 mt-3 rounded-2xl bg-white/95 backdrop-blur-md shadow-lg ring-1 ring-black/5">
+                  {[
+                    { label: 'Posti', id: 'opzioni' },
+                    { label: 'Case', id: 'case' },
+                                        { label: 'FAQ', id: 'faq' },
+                    { label: 'Contatti', id: 'form' }
+                  ].map(item => (
+                    <button 
+                      key={item.id}
+                      onClick={() => scrollToSection(item.id)}
+                      className="text-left px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors text-gray-700"
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </nav>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.header>
+
+      {/* Hero Section */}
+      <section id="top" className="relative min-h-[100svh] md:min-h-screen flex items-center overflow-hidden pt-20">
+        {/* Background Images */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-teal-600/90 via-teal-500/80 to-teal-400/70 z-10" />
+          <motion.img 
+            src="/images/hero-beach.jpg" 
+            alt="Gallipoli Mare" 
+            className="w-full h-full object-cover"
+            initial={{ scale: 1.1 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 10, repeat: Infinity, repeatType: 'reverse' }}
+          />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20 w-full">
+          <div className="max-w-3xl">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <Badge className="bg-white/20 text-white backdrop-blur-sm border-0 mb-6 hover:bg-white/30">
+                <Sparkles className="w-3 h-3 mr-2" />
+                20+ Case Vacanza Selezionate
+              </Badge>
+            </motion.div>
+            
+            <motion.h1 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight" 
+              style={{ fontFamily: 'Playfair Display, serif' }}
+            >
+              La tua vacanza perfetta a Gallipoli
+            </motion.h1>
+            
+            <motion.p 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl"
+            >
+              Case e ville selezionate nel cuore del Salento. Prenota direttamente su WhatsApp, 
+              senza intermediari. Sempre disponibili, risposta immediata.
+            </motion.p>
+
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="flex flex-wrap gap-4"
+            >
+              <button 
+                onClick={() => scrollToSection('case')} 
+                className="bg-white text-teal-600 px-8 py-4 rounded-full font-semibold text-lg shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 flex items-center gap-2 group"
+              >
+                <Home className="w-5 h-5" />
+                Vedi le Case
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+              <button 
+                onClick={() => scrollToSection('form')} 
+                className="bg-transparent border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-teal-600 transition-all flex items-center gap-2"
+              >
+                <Calendar className="w-5 h-5" />
+                Verifica Disponibilità
+              </button>
+            </motion.div>
+
+            {/* Trust badges */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="mt-12 flex flex-wrap gap-6"
+            >
+              <div className="flex items-center gap-2 text-white">
+                <CheckCircle className="w-5 h-5" />
+                <span className="text-sm">Risposta in 5 minuti</span>
+              </div>
+              <div className="flex items-center gap-2 text-white">
+                <Shield className="w-5 h-5" />
+                <span className="text-sm">Prenotazione Sicura</span>
+              </div>
+              <div className="flex items-center gap-2 text-white">
+                <Star className="w-5 h-5" />
+                <span className="text-sm">4.8/5 Valutazione</span>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+      </section>
+
+      {/* How it works */}
+      <section className="py-12 md:py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            className="text-center max-w-2xl mx-auto mb-10 md:mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+              Come funziona
+            </h2>
+            <p className="text-gray-500 text-sm md:text-base">
+              Tre semplici passi per la tua vacanza perfetta
+            </p>
+          </motion.div>
+
+          <div className="grid gap-6 md:grid-cols-2 md:gap-8">
+            {[
+              { 
+                icon: Calendar, 
+                title: '1. Scegli le date', 
+                desc: 'Indica check-in, check-out e numero di ospiti. Bastano 20 secondi.',
+                color: 'from-teal-500 to-teal-600'
+              },
+              { 
+                icon: Search, 
+                title: '2. Trova la casa', 
+                desc: 'Filtra per posti, zona e servizi. Sfoglia le foto e leggi i dettagli.',
+                color: 'from-teal-400 to-teal-500'
+              },
+              { 
+                icon: MessageCircle, 
+                title: '3. Prenota su WhatsApp', 
+                desc: 'Ti rispondiamo in pochi minuti con disponibilità e preventivo.',
+                color: 'from-[#25D366] to-[#1ebe57]'
+              }
+            ].map((step, index) => (
+              <motion.div 
+                key={index}
+                className="flex items-start gap-4 md:block md:text-center group"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <motion.div 
+                  className={`w-12 h-12 md:w-20 md:h-20 shrink-0 rounded-2xl bg-gradient-to-br ${step.color} flex items-center justify-center shadow-lg shadow-teal-500/30 md:mx-auto md:mb-6`}
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  transition={{ type: 'spring', stiffness: 300 }}
+                >
+                  <step.icon className="w-6 h-6 md:w-10 md:h-10 text-white" />
+                </motion.div>
+                <div className="min-w-0">
+                  <h3 className="text-base md:text-xl font-semibold mb-1 md:mb-3">{step.title}</h3>
+                  <p className="text-gray-500 text-sm md:text-base">
+                    {step.desc}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Guest Options */}
+      <section id="opzioni" className="py-12 md:py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            className="text-center max-w-2xl mx-auto mb-8 md:mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+              Quanti siete?
+            </h2>
+            <p className="text-gray-500 text-sm md:text-base">
+              Scegli la fascia di posti letto, ti mostriamo le case più adatte
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {[
+              { value: '2-4', label: '2-4 posti', sub: 'Coppie & piccoli gruppi', icon: Users, desc: 'Monolocali e bilocali' },
+              { value: '4-8', label: '4-8 posti', sub: 'Famiglie & amici', icon: Users, desc: 'Case indipendenti' },
+              { value: '8-12', label: '8-12 posti', sub: 'Ville & villette', icon: Home, desc: 'Spazi esterni ampi' },
+              { value: '12+', label: '12+ posti', sub: 'Gruppi grandi', icon: Sparkles, desc: 'Soluzioni esclusive' }
+            ].map((option, index) => (
+              <motion.button
+                key={option.value}
+                onClick={() => {
+                  setSelectedGuests(option.value);
+                  scrollToSection('case');
+                }}
+                className={`p-6 rounded-2xl border-2 transition-all duration-300 text-left ${
+                  selectedGuests === option.value 
+                    ? 'border-teal-500 bg-teal-50 shadow-lg shadow-teal-500/10' 
+                    : 'border-gray-200 bg-white hover:border-teal-300 hover:shadow-md'
+                }`}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                whileHover={{ scale: 1.02 }}
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                    selectedGuests === option.value 
+                      ? 'bg-teal-500 text-white' 
+                      : 'bg-gray-100 text-gray-500'
+                  }`}>
+                    <option.icon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-800">{option.label}</div>
+                    <div className="text-xs text-gray-500">{option.sub}</div>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-500">{option.desc}</p>
+              </motion.button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Houses Grid */}
+      <section id="case" className="py-20 md:py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            className="text-center max-w-2xl mx-auto mb-8 md:mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+              Le nostre case
+            </h2>
+            <p className="text-gray-500 text-sm md:text-base">
+              Selezione di alloggi ideali per la tua vacanza estiva
+            </p>
+          </motion.div>
+
+          {filteredHouses.length === 0 ? (
+            <motion.div 
+              className="text-center py-20"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              <Home className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+              <h3 className="text-xl font-semibold mb-2 text-gray-600">Nessuna casa trovata</h3>
+              <p className="text-gray-500 mb-6">Prova a modificare i filtri o seleziona un'altra fascia di ospiti</p>
+              <button 
+                onClick={() => {
+                  setSelectedGuests('all');
+                  setSelectedZone('all');
+                }}
+                className="px-6 py-3 rounded-full border-2 border-teal-500 text-teal-600 font-medium hover:bg-teal-500 hover:text-white transition-all"
+              >
+                Mostra tutte le case
+              </button>
+            </motion.div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {filteredHouses.map((house, index) => (
+                <motion.div
+                  key={house.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-teal-500/10 transition-all duration-500 hover:-translate-y-2">
+                    <div className="relative">
+                      <div className="aspect-[4/3] overflow-hidden">
+                        <motion.img 
+                          src={house.image} 
+                          alt={house.name}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 cursor-pointer"
+                          onClick={() => openLightbox(house, 0)}
+                        />
+                      </div>
+                      
+                      {/* Badges */}
+                      <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+                        {house.isNew && (
+                          <Badge className="bg-amber-400 text-amber-900 hover:bg-amber-400">
+                            <Sparkles className="w-3 h-3 mr-1" /> Nuovo
+                          </Badge>
+                        )}
+                        {house.hasPool && (
+                          <Badge className="bg-teal-500 text-white hover:bg-teal-500">
+                            <Waves className="w-3 h-3 mr-1" /> Piscina
+                          </Badge>
+                        )}
+                        {house.rating && (
+                          <Badge variant="secondary" className="bg-white/90 backdrop-blur-sm">
+                            <Star className="w-3 h-3 mr-1 text-amber-400 fill-amber-400" /> 
+                            {house.rating} ({house.reviews})
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* Gallery button */}
+                      <button
+                        onClick={() => openLightbox(house, 0)}
+                        className="absolute top-4 right-14 w-10 h-10 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Camera className="w-4 h-4 text-gray-700" />
+                      </button>
+
+                      {/* Favorite button */}
+                      <button
+                        onClick={() => toggleFavorite(house.id)}
+                        className={`absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                          favorites.includes(house.id) 
+                            ? 'bg-red-500 text-white' 
+                            : 'bg-white/90 backdrop-blur-sm text-gray-500 hover:text-red-500'
+                        }`}
+                      >
+                        <Heart className={`w-5 h-5 ${favorites.includes(house.id) ? 'fill-current' : ''}`} />
+                      </button>
+
+                      {/* Distance badge */}
+                      {house.distanceToSea && (
+                        <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium text-gray-700 flex items-center gap-1">
+                          <Navigation className="w-3 h-3" />
+                          {house.distanceToSea}m dal mare
+                        </div>
+                      )}
+                    </div>
+
+                    <CardContent className="p-5">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <h3 className="text-xl font-bold text-gray-800" style={{ fontFamily: 'Playfair Display, serif' }}>
+                            {house.name}
+                          </h3>
+                          <div className="flex items-center gap-1 text-gray-500 mt-1">
+                            <MapPin className="w-4 h-4" />
+                            <span className="text-sm">{house.zone}</span>
+                          </div>
+                        </div>
+                        {house.priceFrom && (
+                          <div className="text-right">
+                            <div className="text-xs text-gray-500">Da</div>
+                            <div className="text-xl font-bold text-teal-600">{house.priceFrom}</div>
+                            <div className="text-xs text-gray-500">/notte</div>
+                          </div>
+                        )}
+                      </div>
+
+                      <p className="text-gray-500 text-sm mb-4 line-clamp-2">
+                        {house.description}
+                      </p>
+
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        <div className="flex items-center gap-1 text-sm text-gray-500">
+                          <Users className="w-4 h-4" />
+                          {house.guests} ospiti
+                        </div>
+                        <div className="flex items-center gap-1 text-sm text-gray-500">
+                          <Bed className="w-4 h-4" />
+                          {house.bedrooms} camere
+                        </div>
+                        <div className="flex items-center gap-1 text-sm text-gray-500">
+                          <Bath className="w-4 h-4" />
+                          {house.bathrooms} bagni
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <button 
+                          onClick={() => setSelectedHouse(house)}
+                          className="flex-1 px-4 py-2.5 rounded-full border-2 border-teal-500 text-teal-600 font-medium hover:bg-teal-500 hover:text-white transition-all text-sm"
+                        >
+                          Dettagli
+                        </button>
+                        <button 
+                          onClick={() => handleWhatsApp(house)}
+                          className="flex-1 px-4 py-2.5 rounded-full bg-teal-500 text-white font-medium hover:bg-teal-600 transition-all text-sm flex items-center justify-center gap-2"
+                        >
+                          <WhatsAppIcon className="w-4 h-4 text-white" />
+                          WhatsApp
+                        </button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Services */}
+      <section className="py-20 md:py-28 bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            className="text-center max-w-2xl mx-auto mb-8 md:mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+              Servizi inclusi
+            </h2>
+            <p className="text-gray-500 text-sm md:text-base">
+              Tutto quello che ti serve per una vacanza perfetta
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            {services.map((service, index) => (
+              <motion.div
+                key={index}
+                className="text-center p-6 rounded-2xl bg-white shadow-sm hover:shadow-lg transition-all hover:-translate-y-1"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+              >
+                <div className="w-12 h-12 mx-auto mb-4 rounded-xl bg-teal-50 flex items-center justify-center">
+                  <service.icon className="w-6 h-6 text-teal-500" />
+                </div>
+                <h4 className="font-semibold text-sm mb-1">{service.title}</h4>
+                <p className="text-xs text-gray-500">{service.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-16 bg-white border-y border-gray-100">
+        <div
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          ref={statsRef}
+        >
+          <div
+            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            onMouseEnter={() => setStatsInView(true)}
+          >
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                className="text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <div className="w-14 h-14 mx-auto mb-4 rounded-xl bg-teal-50 flex items-center justify-center">
+                  <stat.icon className="w-7 h-7 text-teal-500" />
+                </div>
+                <div className="text-3xl md:text-4xl font-bold text-gray-800 mb-1" style={{ fontFamily: 'Playfair Display, serif' }}>
+                  {stat.suffix === '/5'
+                    ? `${animatedStats[index].toFixed(1)}${stat.suffix}`
+                    : stat.suffix === 'min'
+                      ? `${Math.round(animatedStats[index])} ${stat.suffix}`
+                      : `${Math.round(animatedStats[index])}${stat.suffix}`
+                  }
+                </div>
+                <div className="text-sm text-gray-500">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+      {/* Reviews Section */}
+      <section className="py-20 md:py-28 bg-gradient-to-b from-white to-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            className="text-center max-w-2xl mx-auto mb-10 md:mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+              Cosa dicono di noi
+            </h2>
+            <p className="text-gray-500 text-sm md:text-base">
+              Le esperienze dei nostri ospiti
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {reviews.map((review, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <Card className="bg-white hover:shadow-xl transition-shadow h-full">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 font-semibold text-sm">
+                        {review.avatar}
+                      </div>
+                      <div>
+                        <div className="font-semibold text-sm">{review.name}</div>
+                        <div className="text-xs text-gray-500">{review.location}</div>
+                      </div>
+                    </div>
+                    <div className="flex gap-1 mb-3">
+                      {[...Array(review.rating)].map((_, i) => (
+                        <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                      ))}
+                    </div>
+                    <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+                      "{review.text}"
+                    </p>
+                    <div className="border-t border-gray-100 pt-4 flex justify-between items-center">
+                      <span className="text-xs font-medium text-teal-600">{review.house}</span>
+                      <span className="text-xs text-gray-400">{review.date}</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-20 md:py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            className="text-center max-w-2xl mx-auto mb-8 md:mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+              Domande frequenti
+            </h2>
+            <p className="text-gray-500 text-sm md:text-base">
+              Tutto quello che vuoi sapere
+            </p>
+          </motion.div>
+
+          <div className="max-w-3xl mx-auto">
+            <Accordion type="single" collapsible className="space-y-4">
+              {faqs.map((faq, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                >
+                  <AccordionItem 
+                    value={`item-${index}`}
+                    className="border border-gray-200 rounded-xl px-6 data-[state=open]:border-teal-500 data-[state=open]:shadow-lg transition-all"
+                  >
+                    <AccordionTrigger className="text-left font-semibold text-gray-800 hover:no-underline py-5">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-gray-500 pb-5">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                </motion.div>
+              ))}
+            </Accordion>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Form */}
+      <section id="form" className="py-20 md:py-28 bg-gradient-to-br from-teal-500 to-teal-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="text-white"
+            >
+              <h2 className="text-3xl md:text-4xl font-bold mb-6" style={{ fontFamily: 'Playfair Display, serif' }}>
+                Richiedi disponibilità
+              </h2>
+              <p className="text-white/90 text-lg mb-8">
+                Compila il modulo e riceverai un preventivo personalizzato direttamente su WhatsApp. 
+                Nessuna prenotazione online, tutto direttamente con noi.
+              </p>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5" />
+                  </div>
+                  <span>Risposta rapida in pochi minuti</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                    <Shield className="w-5 h-5" />
+                  </div>
+                  <span>Nessun intermediario, prenoti diretto</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                    <WhatsAppIcon className="w-5 h-5 text-white" />
+                  </div>
+                  <span>Assistenza durante tutto il soggiorno</span>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <Card className="bg-white shadow-2xl">
+                <CardContent className="p-6 md:p-8">
+                  <form onSubmit={handleFormSubmit} className="space-y-5">
+                    <div className="grid md:grid-cols-2 gap-5">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Check-in *</label>
+                        <input 
+                          type="date" 
+                          value={formData.checkin}
+                          onChange={(e) => setFormData({...formData, checkin: e.target.value})}
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white transition-all focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Check-out *</label>
+                        <input 
+                          type="date" 
+                          value={formData.checkout}
+                          onChange={(e) => setFormData({...formData, checkout: e.target.value})}
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white transition-all focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-5">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Numero ospiti *</label>
+                        <input 
+                          type="number" 
+                          min="1"
+                          value={formData.guests}
+                          onChange={(e) => setFormData({...formData, guests: e.target.value})}
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white transition-all focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none"
+                          placeholder="Es. 4"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Budget indicativo</label>
+                        <input 
+                          type="text" 
+                          value={formData.budget}
+                          onChange={(e) => setFormData({...formData, budget: e.target.value})}
+                          className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white transition-all focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none"
+                          placeholder="Es. €100-150 a notte"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Note e richieste</label>
+                      <textarea 
+                        value={formData.notes}
+                        onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                        className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-white transition-all focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none resize-none"
+                        rows={4}
+                        placeholder="Zona preferita, servizi richiesti, orari di arrivo..."
+                      />
+                    </div>
+
+                    <Button 
+                      type="submit"
+                      className="w-full bg-[#25D366] hover:bg-[#1ebe57] text-white py-6 rounded-xl text-lg font-semibold shadow-lg shadow-green-500/30 hover:shadow-xl hover:shadow-green-500/40 transition-all"
+                    >
+                      <MessageCircle className="w-5 h-5 mr-2" />
+                      Invia su WhatsApp
+                    </Button>
+
+                    <p className="text-center text-sm text-gray-500">
+                      Riceverai risposta diretta senza intermediari
+                    </p>
+                  </form>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section className="py-20 md:py-28 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            className="text-center max-w-2xl mx-auto mb-8 md:mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
+              Contattaci
+            </h2>
+            <p className="text-gray-500 text-sm md:text-base">
+              Siamo sempre a tua disposizione
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {[
+              { icon: Phone, title: 'Telefono', subtitle: 'Chiamaci per informazioni immediate', value: '+39 329 227 2939', href: 'tel:+393292272939', color: 'teal' },
+              { icon: MessageCircle, title: 'WhatsApp', subtitle: 'Risposta rapida garantita', value: 'Scrivici su WhatsApp', href: 'https://wa.me/393292272939', color: 'green' }
+            ].map((contact, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+              >
+                <Card className="text-center hover:shadow-lg transition-shadow h-full">
+                  <CardContent className="p-8">
+                    <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl flex items-center justify-center ${
+                      contact.color === 'green' 
+                        ? 'bg-green-50' 
+                        : 'bg-teal-50'
+                    }`}>
+                      <contact.icon className={`w-8 h-8 ${
+                        contact.color === 'green' 
+                          ? 'text-green-500' 
+                          : 'text-teal-500'
+                      }`} />
+                    </div>
+                    <h3 className="font-semibold mb-2 text-gray-800">{contact.title}</h3>
+                    <p className="text-sm text-gray-500 mb-4">{contact.subtitle}</p>
+                    <a 
+                      href={contact.href} 
+                      className={`font-semibold hover:underline ${
+                        contact.color === 'green' 
+                          ? 'text-green-600' 
+                          : 'text-teal-600'
+                      }`}
+                    >
+                      {contact.value}
+                    </a>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-800 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center">
+                  <Home className="w-5 h-5 text-white" />
+                </div>
+                <span className="font-bold text-lg" style={{ fontFamily: 'Playfair Display, serif' }}>Salento Stay</span>
+              </div>
+              <p className="text-gray-400 text-sm">
+                Case vacanza selezionate a Gallipoli e nel Salento. 
+                Prenota direttamente con noi, senza intermediari.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-4 text-white">Contatti</h4>
+              <ul className="space-y-2 text-sm text-gray-400">
+                <li><a href="tel:+393292272939" className="hover:text-white transition-colors">+39 329 227 2939</a></li>
+                <li><a href="https://wa.me/393292272939" className="hover:text-white transition-colors">WhatsApp</a></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-gray-400">
+              © {new Date().getFullYear()} Salento Stay. Tutti i diritti riservati.
+            </p>
+            <div className="flex gap-6 text-sm text-gray-400">
+              <button onClick={() => setPrivacyOpen(true)} className="hover:text-white transition-colors">Privacy Policy</button>
+              <a href="#" className="hover:text-white transition-colors">Termini e Condizioni</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* WhatsApp FAB */}
+      <motion.a 
+        href="https://wa.me/393292272939" 
+        target="_blank"
+        className="fixed bottom-6 right-6 z-50 bg-[#25D366] text-white rounded-full px-5 py-3 shadow-lg shadow-green-500/30 font-medium flex items-center gap-2 transition-all hover:bg-[#1ebe57] hover:shadow-xl hover:shadow-green-500/40 hover:scale-105"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 1 }}
+      >
+        <WhatsAppIcon className="w-5 h-5 text-white" />
+        <span className="hidden sm:inline">Chiedi su WhatsApp</span>
+      </motion.a>
+
+
+      {/* Privacy Policy Dialog */}
+      <Dialog open={privacyOpen} onOpenChange={setPrivacyOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Informativa Privacy</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 text-sm text-gray-600">
+            <p>Questa pagina è una informativa semplice per un sito vetrina che rimanda a WhatsApp.</p>
+
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-1">Che cos’è questo sito?</h3>
+              <p>Salento Stay è un sito vetrina di alloggi. Non consente pagamenti o prenotazioni online: la richiesta avviene tramite WhatsApp.</p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-1">Dati che inserisci nel form</h3>
+              <p>Se compili il modulo (date, numero ospiti, budget, note), il sito prepara un messaggio e apre WhatsApp sul tuo dispositivo. I dati non vengono salvati su questo sito: restano nel messaggio che scegli tu se inviare.</p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-1">WhatsApp</h3>
+              <p>Quando clicchi un pulsante WhatsApp, vieni reindirizzato a WhatsApp/Meta. L’eventuale trattamento dei dati su WhatsApp segue l’informativa di WhatsApp.</p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-1">Cookie e tracciamenti</h3>
+              <p>Questo sito non usa cookie di profilazione né strumenti di analytics di terze parti.</p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-gray-800 mb-1">Titolare del trattamento</h3>
+              <p>Per contatti e richieste relative alla privacy, scrivici su WhatsApp.</p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Lightbox */}
+      <Lightbox
+        open={lightboxOpen}
+        close={() => setLightboxOpen(false)}
+        slides={safeSlidesForLightbox(lightboxImages)}
+        index={lightboxIndex}
+        on={{ view: ({ index }) => setLightboxIndex(index) }}
+        render={{
+          buttonPrev: (props: any) => (
+            <button type="button" {...props}>
+              <ChevronLeft className="w-8 h-8 text-white" />
+            </button>
+          ),
+          buttonNext: (props: any) => (
+            <button type="button" {...props}>
+              <ChevronRight className="w-8 h-8 text-white" />
+            </button>
+          ),
+          buttonClose: (props: any) => (
+            <button type="button" {...props}>
+              <X className="w-8 h-8 text-white" />
+            </button>
+          )
+        }}
+        styles={{
+          container: { backgroundColor: 'rgba(0, 0, 0, 0.9)' },
+        }}
+      />
+
+      {/* House Detail Dialog */}
+      <Dialog open={!!selectedHouse} onOpenChange={() => setSelectedHouse(null)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto p-0">
+          {selectedHouse && (
+            <>
+              {/* Gallery in dialog */}
+              <div className="relative">
+                <div className="aspect-video relative">
+                  <img 
+                    src={selectedHouse.image} 
+                    alt={selectedHouse.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <button
+                    onClick={() => openLightbox(selectedHouse, 0)}
+                    className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-full p-3 hover:bg-white transition-colors"
+                  >
+                    <Maximize2 className="w-5 h-5 text-gray-700" />
+                  </button>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl" style={{ fontFamily: 'Playfair Display, serif' }}>
+                    {selectedHouse.name}
+                  </DialogTitle>
+                </DialogHeader>
+                
+                <div className="mt-4">
+                  <div className="grid md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                      <h3 className="font-semibold text-gray-800 mb-3">Informazioni</h3>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <MapPin className="w-4 h-4 text-teal-500" />
+                          {selectedHouse.zone}
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Users className="w-4 h-4 text-teal-500" />
+                          {selectedHouse.guests} ospiti
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Bed className="w-4 h-4 text-teal-500" />
+                          {selectedHouse.bedrooms} camere
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Bath className="w-4 h-4 text-teal-500" />
+                          {selectedHouse.bathrooms} bagni
+                        </div>
+                        {selectedHouse.distanceToSea && (
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Navigation className="w-4 h-4 text-teal-500" />
+                            {selectedHouse.distanceToSea}m dal mare
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-800 mb-3">Servizi</h3>
+                      <div className="space-y-2 text-sm">
+                        {selectedHouse.hasPool && (
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Waves className="w-4 h-4 text-teal-500" />
+                            Piscina
+                          </div>
+                        )}
+                        {selectedHouse.hasAC && (
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Wind className="w-4 h-4 text-teal-500" />
+                            Aria condizionata
+                          </div>
+                        )}
+                        {selectedHouse.hasParking && (
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Car className="w-4 h-4 text-teal-500" />
+                            Parcheggio
+                          </div>
+                        )}
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Wifi className="w-4 h-4 text-teal-500" />
+                          Wi-Fi
+                        </div>
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <Sun className="w-4 h-4 text-teal-500" />
+                          Biancheria inclusa
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mb-6">
+                    <h3 className="font-semibold text-gray-800 mb-2">Descrizione</h3>
+                    <p className="text-gray-600 leading-relaxed">{selectedHouse.description}</p>
+                  </div>
+
+                  {selectedHouse.rating && (
+                    <div className="flex items-center gap-2 mb-6 p-4 bg-teal-50 rounded-xl">
+                      <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
+                      <span className="font-semibold">{selectedHouse.rating}/5</span>
+                      <span className="text-gray-500">
+                        ({selectedHouse.reviews} recensioni)
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex gap-3">
+                    <button 
+                      onClick={() => setSelectedHouse(null)}
+                      className="flex-1 px-4 py-3 rounded-full border-2 border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-all text-sm"
+                    >
+                      Chiudi
+                    </button>
+                    <button 
+                      onClick={() => {
+                        handleWhatsApp(selectedHouse);
+                        setSelectedHouse(null);
+                      }}
+                      className="flex-1 px-4 py-3 rounded-full bg-teal-500 text-white font-medium hover:bg-teal-600 transition-all text-sm flex items-center justify-center gap-2"
+                    >
+                      <WhatsAppIcon className="w-4 h-4 text-white" />
+                      Richiedi su WhatsApp
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
+
+export default App;
