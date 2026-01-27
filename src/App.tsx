@@ -1216,61 +1216,112 @@ return () => window.removeEventListener('scroll', handleScroll);
 
 
       {/* Reviews Section */}
-      <section className="py-20 md:py-28 bg-gradient-to-b from-white to-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div 
-            className="text-center max-w-2xl mx-auto mb-10 md:mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>
-              Cosa dicono di noi
-            </h2>
-            <p className="text-gray-500 text-sm md:text-base">
-              Le esperienze dei nostri ospiti
-            </p>
-          </motion.div>
+      
+      {/* Recensioni verificate (Booking) */}
+      <section id="recensioni" className="py-16 bg-white">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-sm font-medium">
+              <span className="w-2 h-2 rounded-full bg-emerald-500" />
+              Verificate
+            </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {reviews.map((review, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+            <h2 className="mt-4 text-3xl md:text-4xl font-serif text-gray-900">Recensioni verificate</h2>
+            <p className="mt-2 text-gray-600">da Booking.com</p>
+
+            <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <div className="text-sm text-gray-700">
+                ⭐ <span className="font-semibold">9,0/10</span> su Booking <span className="text-gray-500">(2 recensioni)</span>
+              </div>
+
+              <a
+                href="https://www.booking.com/hotel/it/baia-verde-apartment-gallipoli-baia-verde.it.html"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-emerald-200 text-emerald-700 hover:bg-emerald-50 transition"
               >
-                <Card className="bg-white hover:shadow-xl transition-shadow h-full">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 font-semibold text-sm">
-                        {review.avatar}
-                      </div>
-                      <div>
-                        <div className="font-semibold text-sm">{review.name}</div>
-                        <div className="text-xs text-gray-500">{review.location}</div>
-                      </div>
-                    </div>
-                    <div className="flex gap-1 mb-3">
-                      {[...Array(review.rating)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
-                      ))}
-                    </div>
-                    <p className="text-gray-600 text-sm mb-4 leading-relaxed">
-                      "{review.text}"
-                    </p>
-                    <div className="border-t border-gray-100 pt-4 flex justify-between items-center">
-                      <span className="text-xs font-medium text-teal-600">{review.house}</span>
-                      <span className="text-xs text-gray-400">{review.date}</span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                Leggile su Booking
+              </a>
+            </div>
           </div>
+
+          {(() => {
+            const bookingReviews = [
+              {
+                name: "Cat",
+                country: "Italia",
+                date: "settembre 2025",
+                score: "9,0",
+                title: "Ottimo, ci siamo trovati veramente bene",
+                text:
+                  "Posizione comodissima: vicina al mare, al supermercato e ai locali. Residence tranquillo e curato. Spazi ampi, terrazza e balconi perfetti per pranzi o cene all’aperto.",
+                house: "Baia Verde Apartment",
+                tag: "Ospite Booking",
+              },
+              {
+                name: "Giada",
+                country: "Italia",
+                date: "luglio 2025",
+                score: "9,0",
+                title: "Eccellente",
+                text:
+                  "Alloggio fedele alle foto e vicino al mare. Nota: sarebbe comodo avere le zanzariere.",
+                house: "Baia Verde Apartment",
+                tag: "Ospite Booking",
+              },
+            ]
+
+            return (
+              <div className="flex md:grid md:grid-cols-2 gap-4 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none pb-2">
+                {bookingReviews.map((r) => (
+                  <article
+                    key={`${r.name}-${r.date}`}
+                    className="min-w-[85%] sm:min-w-[60%] md:min-w-0 snap-start bg-white border border-gray-100 rounded-2xl shadow-sm p-6"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-semibold">
+                          {r.name?.[0] ?? "O"}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-gray-900">{r.name}</div>
+                          <div className="text-xs text-gray-500">
+                            {r.tag} • {r.country} • {r.date}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="shrink-0 px-3 py-1 rounded-lg bg-emerald-600 text-white font-semibold">
+                        {r.score}
+                      </div>
+                    </div>
+
+                    <h3 className="mt-4 font-semibold text-gray-900">{r.title}</h3>
+                    <p className="mt-2 text-gray-600 leading-relaxed">{r.text}</p>
+
+                    <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
+                      <span className="font-medium text-emerald-700">{r.house}</span>
+                      <a
+                        href="https://www.booking.com/hotel/it/baia-verde-apartment-gallipoli-baia-verde.it.html"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-emerald-700 hover:underline"
+                      >
+                        Leggi su Booking
+                      </a>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )
+          })()}
+
+          <p className="mt-6 text-center text-xs text-gray-500">
+            Recensioni riassunte/parafrasate con rimando alla fonte originale su Booking.com.
+          </p>
         </div>
       </section>
+
 
       {/* FAQ Section */}
       <section id="faq" className="py-20 md:py-28 bg-white">
