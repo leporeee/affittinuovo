@@ -13,8 +13,6 @@ import { toast } from 'sonner';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 
-
-
 const WhatsAppIcon = ({ className = '' }: { className?: string }) => (
   <svg
     viewBox="0 0 448 512"
@@ -402,7 +400,6 @@ const faqs = [
     answer: 'Il prezzo include: alloggio, biancheria, consumi (acqua, luce, gas), Wi-Fi, pulizie iniziali e finali, assistenza durante il soggiorno. Tasse di soggiorno escluse (€1 al giorno a persona).'
   }
 ];
-
 
 const stats = [
   { value: 20, suffix: '+', label: 'Case disponibili', icon: Home },
