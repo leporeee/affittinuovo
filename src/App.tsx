@@ -1,5 +1,5 @@
 import {
-  useState,
+  import { motion } from 'framer-motion';   useState,
   useEffect,
   Users,
   Bed,
@@ -26,7 +26,8 @@ import {
   Coffee,
   Dumbbell,
   Camera,
-  Navigation
+  Navigation,
+  MapPin,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
