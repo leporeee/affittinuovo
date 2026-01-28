@@ -1,33 +1,8 @@
 import {
-  import { motion } from 'framer-motion';   useState,
-  useEffect,
-  Users,
-  Bed,
-  Bath,
-  Car,
-  Waves,
-  Wind,
-  Wifi,
-  Star,
-  Heart,
-  Calendar,
-  MessageCircle,
-  Shield,
-  CheckCircle,
-  ChevronDown,
-  Phone,
-  Sparkles,
-  Home,
-  Search,
-  Clock,
-  ArrowRight,
-  Maximize2,
-  Sun,
-  Coffee,
-  Dumbbell,
-  Camera,
-  Navigation,
-  MapPin,
+  useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  MapPin, Users, Bed, Bath, Car, Waves, Wind, Wifi, Star, Heart, Calendar, MessageCircle, Shield, CheckCircle, ChevronDown, Phone, Sparkles, Home, Search, Clock, ArrowRight, Maximize2, Sun, Coffee, Dumbbell, Camera, Navigation,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -425,6 +400,45 @@ const faqs = [
   {
     question: 'Cosa include il prezzo?',
     answer: 'Il prezzo include: alloggio, biancheria, consumi (acqua, luce, gas), Wi-Fi, pulizie iniziali e finali, assistenza durante il soggiorno. Tasse di soggiorno escluse (€1 al giorno a persona).'
+  }
+];
+
+const reviews = [
+  {
+    name: 'Maria Rossi',
+    location: 'Milano',
+    avatar: 'M.R',
+    rating: 5,
+    text: 'Esperienza fantastica! Casa pulita, proprietari gentilissimi e sempre disponibili. Posizione perfetta per raggiungere le spiagge più belle. Torneremo sicuramente!',
+    house: 'VILLA AZZURRA',
+    date: '2 settimane fa'
+  },
+  {
+    name: 'Marco Bianchi',
+    location: 'Roma',
+    avatar: 'M.B',
+    rating: 5,
+    text: 'Ho prenotato con Salento Stay per la terza volta consecutiva. Servizio impeccabile, case sempre come da descrizione. La prenotazione via WhatsApp è velocissima!',
+    house: 'ATENA',
+    date: '1 mese fa'
+  },
+  {
+    name: 'Giulia e Luca',
+    location: 'Torino',
+    avatar: 'G.L',
+    rating: 5,
+    text: 'Settimana perfetta a Gallipoli. La casa ARMONIA ha quel balcone vista mare che ci ha fatto innamorare. Consigliatissimo!',
+    house: 'ARMONIA',
+    date: '3 settimane fa'
+  },
+  {
+    name: 'Famiglia Verdi',
+    location: 'Bologna',
+    avatar: 'F.V',
+    rating: 5,
+    text: 'Siamo stati in 8 nella MIRAMARE. Spaziosa, pulita, vicina al centro ma in zona tranquilla. I bambini non volevano più andare via!',
+    house: 'MIRAMARE',
+    date: '1 mese fa'
   }
 ];
 
