@@ -1,8 +1,32 @@
 import {
-  useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  MapPin, Users, Bed, Bath, Car, Waves, Wind, Wifi, Star, Heart, Calendar, MessageCircle, Shield, CheckCircle, ChevronDown, Phone, Sparkles, Home, Search, Clock, ArrowRight, Maximize2, Sun, Coffee, Dumbbell, Camera, Navigation,
+  useState,
+  useEffect,
+  Users,
+  Bed,
+  Bath,
+  Car,
+  Waves,
+  Wind,
+  Wifi,
+  Star,
+  Heart,
+  Calendar,
+  MessageCircle,
+  Shield,
+  CheckCircle,
+  ChevronDown,
+  Phone,
+  Sparkles,
+  Home,
+  Search,
+  Clock,
+  ArrowRight,
+  Maximize2,
+  Sun,
+  Coffee,
+  Dumbbell,
+  Camera,
+  Navigation
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
