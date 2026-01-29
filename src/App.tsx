@@ -2,7 +2,7 @@ import {
   useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  MapPin, Users, Bed, Bath, Car, Waves, Wind, Wifi, Star, Heart, Calendar, MessageCircle, Shield, CheckCircle, ChevronDown, Phone, Sparkles, Home, Search, Clock, ArrowRight, Maximize2, Sun, Coffee, Dumbbell, Camera, Navigation,
+  MapPin, Users, Bed, Bath, Car, Waves, Wind, Wifi, Star, Heart, Calendar, MessageCircle, Shield, CheckCircle, ChevronDown, Phone, Sparkles, Home, Search, Clock, ArrowRight, Maximize2, Coffee, Dumbbell, Camera, Navigation,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -1698,7 +1698,6 @@ styles={{
                           Wi-Fi
                         </div>
                         <div className="flex items-center gap-2 text-gray-600">
-                          <Sun className="w-4 h-4 text-teal-500" />
                         </div>
                       </div>
                     </div>
